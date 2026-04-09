@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MedLingua — Language Learning Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════
+   VARIABLES & RESET
+══════════════════════════════════════════════════════ */
+:root{
+  --primary:#2563EB;--primary-d:#1D4ED8;--primary-dd:#1E3A8A;
+  --primary-l:#EFF6FF;--primary-ll:#DBEAFE;
+  --success:#059669;--success-l:#ECFDF5;--success-ll:#A7F3D0;
+  --danger:#DC2626;--danger-l:#FEF2F2;
+  --warning:#D97706;--warning-l:#FEF3C7;
+  --purple:#7C3AED;--purple-l:#F5F3FF;
+  --pink:#DB2777;--pink-l:#FDF2F8;
+  --teal:#0D9488;--teal-l:#F0FDFA;
+  --orange:#EA580C;--orange-l:#FFF7ED;
+  --g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g300:#D1D5DB;
+  --g400:#9CA3AF;--g500:#6B7280;--g600:#4B5563;--g700:#374151;
+  --g800:#1F2937;--g900:#111827;
+  --white:#fff;
+  --r:10px;--rl:16px;--rxl:22px;
+  --shadow-xs:0 1px 2px rgba(0,0,0,.05);
+  --shadow-sm:0 2px 8px rgba(0,0,0,.07);
+  --shadow-md:0 4px 16px rgba(0,0,0,.09);
+  --shadow-lg:0 8px 30px rgba(0,0,0,.11);
+  --shadow-xl:0 16px 50px rgba(0,0,0,.13);
+  --font:'Inter',system-ui,sans-serif;
+  --t:.2s;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--font);background:var(--g50);color:var(--g900);min-height:100dvh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{cursor:pointer;font-family:var(--font);border:none;outline:none}
+input,textarea{font-family:var(--font);outline:none}
+a{text-decoration:none;color:inherit}
+
+/* ══════════════════════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════════════════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{0%{opacity:0;transform:scale(.84)}65%{transform:scale(1.04)}100%{opacity:1;transform:scale(1)}}
+@keyframes slideRight{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+@keyframes slideLeft{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+@keyframes shakeX{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+@keyframes bounceY{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+@keyframes ripple{from{transform:scale(0);opacity:.6}to{transform:scale(2.5);opacity:0}}
+.au{animation:fadeUp .32s ease both}
+.ai{animation:fadeIn .22s ease both}
+.ap{animation:popIn .36s cubic-bezier(.34,1.56,.64,1) both}
+.asr{animation:slideRight .25s ease both}
+.asl{animation:slideLeft .25s ease both}
+
+/* ══════════════════════════════════════════════════════
+   SCREEN SYSTEM
+══════════════════════════════════════════════════════ */
+.screen{display:none!important}
+.screen.on{display:flex!important;flex-direction:column;min-height:100dvh}
+
+/* ══════════════════════════════════════════════════════
+   WELCOME SCREEN
+══════════════════════════════════════════════════════ */
+#s-welcome{background:linear-gradient(155deg,#0F172A 0%,#1E3A8A 35%,#1D4ED8 65%,#2563EB 100%)}
+.w-hero{text-align:center;padding:52px 24px 28px;position:relative}
+.w-hero::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(96,165,250,.12),transparent);pointer-events:none}
+.w-logo-wrap{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:18px}
+.w-logo-icon{width:48px;height:48px;background:linear-gradient(135deg,#3B82F6,#1D4ED8);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 16px rgba(59,130,246,.4)}
+.w-brand{font-size:34px;font-weight:900;color:#fff;letter-spacing:-.5px;line-height:1}
+.w-brand em{color:#FCD34D;font-style:normal}
+.w-tagline{font-size:15px;color:rgba(255,255,255,.72);font-weight:400;line-height:1.5;max-width:340px;margin:0 auto 22px}
+.w-features{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.w-feat{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 12px;font-size:12px;color:rgba(255,255,255,.88);font-weight:500}
+
+.w-card{background:var(--white);border-radius:26px 26px 0 0;flex:1;padding:30px 20px 100px;margin-top:6px}
+.w-section{margin-bottom:28px}
+.w-label{font-size:11.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.w-step{width:22px;height:22px;background:var(--primary);color:#fff;border-radius:50%;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lang-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.lang-btn{display:flex;align-items:center;gap:10px;padding:13px 14px;border:2px solid var(--g200);border-radius:var(--r);background:var(--white);transition:all var(--t);cursor:pointer;width:100%;text-align:left;position:relative;overflow:hidden}
+.lang-btn::after{content:'';position:absolute;inset:0;background:var(--primary);opacity:0;transition:opacity var(--t)}
+.lang-btn:hover:not([disabled]){border-color:var(--primary);background:var(--primary-l)}
+.lang-btn.sel{border-color:var(--primary);background:var(--primary-l);box-shadow:0 0 0 3px rgba(37,99,235,.13)}
+.lang-btn[disabled]{opacity:.28;pointer-events:none}
+.l-flag{font-size:26px;line-height:1;flex-shrink:0;position:relative;z-index:1}
+.l-info{position:relative;z-index:1}
+.l-name{font-size:13px;font-weight:700;color:var(--g800);line-height:1.2}
+.l-nat{font-size:11px;color:var(--g400);margin-top:1px}
+.w-cta{width:100%;padding:16px;background:var(--primary);color:#fff;border-radius:var(--rl);font-size:16px;font-weight:700;transition:all var(--t);display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.1px;margin-top:6px}
+.w-cta:hover:not(:disabled){background:var(--primary-d);box-shadow:0 6px 22px rgba(37,99,235,.4);transform:translateY(-2px)}
+.w-cta:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* ══════════════════════════════════════════════════════
+   APP HEADER
+══════════════════════════════════════════════════════ */
+.app-hdr{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--white);border-bottom:1px solid var(--g200);position:sticky;top:0;z-index:300;box-shadow:var(--shadow-xs)}
+.hdr-logo{font-size:19px;font-weight:800;color:var(--primary);letter-spacing:-.3px;flex-shrink:0}
+.hdr-logo em{color:#F59E0B;font-style:normal}
+.hdr-pair{display:flex;align-items:center;gap:4px;background:var(--g100);border:1px solid var(--g200);border-radius:20px;padding:4px 11px;font-size:11.5px;font-weight:600;color:var(--g600);margin-left:auto;white-space:nowrap}
+.hdr-back{width:36px;height:36px;background:var(--g100);border:1.5px solid var(--g200);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--g600);transition:all var(--t);flex-shrink:0}
+.hdr-back:hover{background:var(--primary-l);border-color:var(--primary-ll);color:var(--primary)}
+
+/* ══════════════════════════════════════════════════════
+   BOTTOM NAV
+══════════════════════════════════════════════════════ */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1.5px solid var(--g200);display:flex;z-index:300;padding-bottom:env(safe-area-inset-bottom,0)}
+.bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 4px 7px;background:none;font-size:9.5px;font-weight:700;color:var(--g400);letter-spacing:.3px;text-transform:uppercase;transition:color var(--t)}
+.bnav-btn.on{color:var(--primary)}
+.bnav-icon{font-size:22px;transition:transform var(--t)}
+.bnav-btn.on .bnav-icon{transform:scale(1.1)}
+
+/* ══════════════════════════════════════════════════════
+   PAGE CONTENT
+══════════════════════════════════════════════════════ */
+.page{flex:1;overflow-y:auto;padding-bottom:74px}
+
+/* ══════════════════════════════════════════════════════
+   DASHBOARD / HOME
+══════════════════════════════════════════════════════ */
+.dash-banner{background:linear-gradient(140deg,#0F172A 0%,#1E3A8A 45%,#2563EB 100%);padding:22px 18px 26px;color:#fff;position:relative;overflow:hidden}
+.db-deco{position:absolute;border-radius:50%}
+.db-deco1{width:240px;height:240px;background:rgba(255,255,255,.04);top:-80px;right:-60px}
+.db-deco2{width:160px;height:160px;background:rgba(255,255,255,.05);bottom:-50px;left:20px}
+.db-greet{font-size:13px;font-weight:400;opacity:.72;margin-bottom:3px;position:relative;z-index:1}
+.db-title{font-size:22px;font-weight:800;line-height:1.25;margin-bottom:10px;position:relative;z-index:1}
+.db-pair{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:5px 13px;font-size:12px;font-weight:600;position:relative;z-index:1}
+.prog-bar-wrap{background:rgba(255,255,255,.14);border-radius:14px;padding:14px;margin-top:18px;position:relative;z-index:1}
+.pb-row{display:flex;justify-content:space-between;margin-bottom:8px}
+.pb-lbl{font-size:12px;opacity:.78;font-weight:500}
+.pb-val{font-size:13px;font-weight:800}
+.pb-track{height:8px;background:rgba(255,255,255,.22);border-radius:4px;overflow:hidden}
+.pb-fill{height:100%;background:#fff;border-radius:4px;transition:width 1s cubic-bezier(.34,1.56,.64,1)}
+.pb-note{font-size:11px;opacity:.68;margin-top:7px}
+
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px 14px 4px}
+.stat-c{background:var(--white);border-radius:var(--rl);border:1px solid var(--g200);padding:13px 10px;text-align:center;box-shadow:var(--shadow-xs)}
+.stat-v{font-size:28px;font-weight:900;line-height:1}
+.stat-l{font-size:10px;color:var(--g500);margin-top:3px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px}
+.sec-ttl{font-size:11px;font-weight:800;color:var(--g500);text-transform:uppercase;letter-spacing:.7px}
+
+/* Level rows */
+.lv-list{display:flex;flex-direction:column;gap:9px;padding:0 12px 16px}
+.lv-row{display:flex;align-items:center;gap:13px;background:var(--white);border-radius:var(--rl);border:2px solid var(--g200);padding:15px 13px;cursor:pointer;transition:all var(--t);position:relative;overflow:hidden}
+.lv-row:hover{transform:translateX(4px);box-shadow:var(--shadow-md);border-color:var(--g300)}
+.lv-row.lv-done{border-color:var(--success)}
+.lv-badge{width:50px;height:50px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;flex-shrink:0;letter-spacing:-.3px}
+.lv-info{flex:1;min-width:0}
+.lv-name{font-size:15px;font-weight:700;margin-bottom:2px}
+.lv-sub{font-size:11px;color:var(--g400);margin-bottom:7px}
+.lv-mbar{height:5px;background:var(--g200);border-radius:3px;overflow:hidden;max-width:200px}
+.lv-mfill{height:100%;border-radius:3px;transition:width .7s ease}
+.lv-pct{font-size:10px;color:var(--g400);margin-top:4px;font-weight:600}
+.lv-arrow{margin-left:auto;font-size:20px;color:var(--g300);flex-shrink:0}
+
+/* ══════════════════════════════════════════════════════
+   TOPICS GRID
+══════════════════════════════════════════════════════ */
+.tp-hdr{padding:18px 16px 8px;display:flex;align-items:center;gap:11px}
+.tp-pill{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:800;color:#fff}
+.tp-title{font-size:19px;font-weight:800}
+.tp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;padding:10px 12px 20px}
+.tp-card{background:var(--white);border-radius:var(--rl);border:2px solid var(--g200);padding:22px 12px;text-align:center;cursor:pointer;transition:all .22s;position:relative;overflow:hidden}
+.tp-card:hover{border-color:var(--primary);background:var(--primary-l);transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.tp-card.tp-done{border-color:var(--success);background:var(--success-l)}
+.tp-card:hover .tc-ico{transform:scale(1.12) rotate(-4deg)}
+.tc-ico{font-size:36px;line-height:1;display:block;margin-bottom:10px;transition:transform .22s}
+.tc-name{font-size:13.5px;font-weight:700;color:var(--g800);margin-bottom:3px}
+.tc-wc{font-size:11px;color:var(--g400);font-weight:500}
+.tc-check{position:absolute;top:8px;right:8px;width:22px;height:22px;background:var(--success);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:900}
+
+/* ══════════════════════════════════════════════════════
+   LESSON
+══════════════════════════════════════════════════════ */
+.ls-topbar{background:var(--white);border-bottom:1px solid var(--g200);padding:13px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:56px;z-index:100}
+.ls-meta{flex:1;min-width:0}
+.ls-tag{font-size:10px;font-weight:800;color:var(--g400);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.ls-title{font-size:16px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ls-tabs{display:flex;background:var(--white);border-bottom:1.5px solid var(--g200);padding:0 16px;overflow-x:auto;scrollbar-width:none}
+.ls-tabs::-webkit-scrollbar{display:none}
+.ls-tab{padding:11px 14px;background:none;font-size:13px;font-weight:600;color:var(--g400);border-bottom:3px solid transparent;margin-bottom:-1.5px;transition:all var(--t);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.ls-tab.on{color:var(--primary);border-bottom-color:var(--primary)}
+
+/* Vocab tab */
+.v-pane{padding:14px}
+.v-intro{background:var(--primary-l);border:1px solid var(--primary-ll);border-radius:var(--r);padding:12px 15px;margin-bottom:16px}
+.v-intro-rule{font-size:10px;font-weight:800;color:var(--primary-dd);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px}
+.v-intro-txt{font-size:13px;color:var(--primary-dd);font-weight:400;line-height:1.55}
+.v-items{display:flex;flex-direction:column;gap:9px}
+.v-item{background:var(--white);border-radius:var(--r);border:1.5px solid var(--g200);padding:13px 13px;display:flex;align-items:center;gap:12px;transition:border-color var(--t)}
+.v-item:hover{border-color:var(--primary-ll)}
+.vi-emo{font-size:27px;flex-shrink:0;width:38px;text-align:center}
+.vi-txts{flex:1;min-width:0}
+.vi-tgt{font-size:17px;font-weight:700;line-height:1.2;color:var(--g900)}
+.vi-sep{display:block;font-size:9px;color:var(--g300);margin:3px 0}
+.vi-n-lbl{font-size:9px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:2px}
+.vi-nat{font-size:13px;color:var(--g500);font-weight:400}
+.vi-actions{display:flex;flex-direction:column;gap:7px;align-items:center;flex-shrink:0}
+.aud-btn{width:36px;height:36px;border-radius:9px;background:var(--primary-l);color:var(--primary);font-size:15px;display:flex;align-items:center;justify-content:center;transition:all var(--t)}
+.aud-btn:hover{background:var(--primary-ll);transform:scale(1.08)}
+.aud-btn:active{transform:scale(.93)}
+.save-btn{width:36px;height:36px;border-radius:9px;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all var(--t);background:var(--g100);color:var(--g400)}
+.save-btn:hover{background:var(--warning-l);color:var(--warning)}
+.save-btn.saved{background:var(--warning-l);color:var(--warning)}
+
+/* Examples tab */
+.e-pane{padding:14px}
+.e-intro-box{background:var(--g100);border:1px solid var(--g200);border-radius:var(--r);padding:11px 14px;margin-bottom:14px;font-size:13px;color:var(--g600)}
+.e-card{background:var(--white);border-radius:var(--r);border:1.5px solid var(--g200);padding:16px;margin-bottom:10px}
+.e-num{font-size:9.5px;font-weight:800;color:var(--g400);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:9px}
+.e-tgt-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
+.e-tgt-txt{font-size:15px;font-weight:600;color:var(--g900);line-height:1.45;flex:1}
+.e-nat-wrap{border-top:1px solid var(--g100);padding-top:9px}
+.e-nat-lbl{font-size:9px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:3px}
+.e-nat-txt{font-size:13px;color:var(--g500);font-weight:400;line-height:1.5}
+
+/* Quiz CTA */
+.q-cta{margin:6px 12px 20px;background:linear-gradient(135deg,#0F172A 0%,#1E3A8A 50%,#2563EB 100%);border-radius:var(--rl);padding:20px;cursor:pointer;transition:all .22s;box-shadow:var(--shadow-md);display:flex;align-items:center;gap:14px}
+.q-cta:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.qcta-icon{font-size:38px;flex-shrink:0}
+.qcta-ttl{font-size:15px;font-weight:800;color:#fff;margin-bottom:4px}
+.qcta-sub{font-size:12px;color:rgba(255,255,255,.72);font-weight:400}
+.qcta-arr{margin-left:auto;font-size:22px;color:rgba(255,255,255,.45);flex-shrink:0}
+
+/* ══════════════════════════════════════════════════════
+   QUIZ
+══════════════════════════════════════════════════════ */
+.qz-wrap{padding:18px;max-width:520px;margin:0 auto}
+.qz-top{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.qz-bar{flex:1;height:9px;background:var(--g200);border-radius:5px;overflow:hidden}
+.qz-fill{height:100%;background:var(--primary);border-radius:5px;transition:width .4s ease}
+.qz-ctr{font-size:12px;font-weight:700;color:var(--g400);white-space:nowrap}
+.qz-card{background:var(--white);border-radius:var(--rxl);border:2px solid var(--g200);padding:26px 22px 22px;text-align:center;margin-bottom:20px;box-shadow:var(--shadow-sm)}
+.qz-lvl{font-size:10px;font-weight:800;color:var(--g300);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:8px}
+.qz-word{font-size:30px;font-weight:900;color:var(--g900);margin-bottom:7px;line-height:1.2}
+.qz-instr{font-size:13px;color:var(--g400);font-weight:400;margin-bottom:4px}
+.qz-play{margin:12px auto 0;width:46px;height:46px;background:var(--primary-l);border-radius:50%;font-size:19px;display:flex;align-items:center;justify-content:center;transition:all var(--t);color:var(--primary)}
+.qz-play:hover{background:var(--primary-ll);transform:scale(1.1)}
+.ans-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px}
+.ans-btn{padding:16px 11px;background:var(--white);border:2px solid var(--g200);border-radius:var(--r);font-size:13.5px;font-weight:600;text-align:center;transition:all .2s;cursor:pointer;line-height:1.3;min-height:54px;display:flex;align-items:center;justify-content:center}
+.ans-btn:hover:not(.qlk){border-color:var(--primary);background:var(--primary-l);color:var(--primary);transform:translateY(-2px)}
+.ans-btn.ans-ok{border-color:var(--success);background:var(--success-l);color:var(--success)}
+.ans-btn.ans-no{border-color:var(--danger);background:var(--danger-l);color:var(--danger);animation:shakeX .35s ease}
+.ans-btn.ans-reveal{border-color:var(--success);background:var(--success-l);color:var(--success)}
+.ans-btn.qlk{cursor:not-allowed;pointer-events:none}
+.fb-row{text-align:center;padding:2px 0 14px;min-height:34px}
+.fb-chip{display:inline-block;padding:6px 18px;border-radius:20px;font-size:13.5px;font-weight:700}
+.fb-ok{background:var(--success-l);color:var(--success)}
+.fb-no{background:var(--danger-l);color:var(--danger)}
+.qz-next-row{text-align:center;padding-bottom:8px}
+.qz-result{text-align:center;padding:32px 20px}
+.qr-emo{font-size:74px;display:block;margin-bottom:14px;animation:bounceY .9s ease infinite}
+.qr-sc{font-size:82px;font-weight:900;line-height:1;margin-bottom:4px}
+.qr-of{font-size:15px;color:var(--g400);margin-bottom:8px;font-weight:500}
+.qr-msg{font-size:21px;font-weight:800;margin-bottom:6px}
+.qr-sub{font-size:14px;color:var(--g500);margin-bottom:30px;font-weight:400}
+.qr-btns{display:flex;flex-direction:column;gap:10px;max-width:320px;margin:0 auto}
+
+/* ══════════════════════════════════════════════════════
+   SAVED WORDS
+══════════════════════════════════════════════════════ */
+.sw-list{padding:12px;display:flex;flex-direction:column;gap:8px}
+.sw-item{display:flex;align-items:center;gap:11px;background:var(--white);border-radius:var(--r);border:1px solid var(--g200);padding:12px 13px;transition:all var(--t)}
+.sw-item:hover{border-color:var(--primary-ll);box-shadow:var(--shadow-xs);transform:translateX(2px)}
+.sw-emo{font-size:27px;flex-shrink:0}
+.sw-info{flex:1;min-width:0}
+.sw-tgt{font-size:15px;font-weight:700;overflow:hidden;text-overflow:ellipsis}
+.sw-nat{font-size:12px;color:var(--g400);margin-top:1px}
+.sw-rm{width:30px;height:30px;border-radius:7px;background:var(--danger-l);color:var(--danger);font-size:13px;display:flex;align-items:center;justify-content:center;transition:all var(--t)}
+.sw-rm:hover{background:var(--danger);color:#fff}
+
+.empty-box{text-align:center;padding:60px 22px}
+.em-ico{font-size:56px;display:block;margin-bottom:16px}
+.em-ttl{font-size:18px;font-weight:700;margin-bottom:7px}
+.em-sub{font-size:14px;color:var(--g400);margin-bottom:22px;line-height:1.6}
+
+/* ══════════════════════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════════════════════ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:12px 22px;border-radius:var(--r);font-size:14px;font-weight:600;transition:all var(--t);cursor:pointer;white-space:nowrap}
+.btn-p{background:var(--primary);color:#fff}
+.btn-p:hover{background:var(--primary-d);box-shadow:0 4px 16px rgba(37,99,235,.35);transform:translateY(-1px)}
+.btn-s{background:var(--g100);color:var(--g700);border:1.5px solid var(--g200)}
+.btn-s:hover{background:var(--g200)}
+.btn-f{width:100%;justify-content:center}
+.btn-lg{padding:15px 28px;font-size:15px;border-radius:var(--rl)}
+
+/* ══════════════════════════════════════════════════════
+   MISC
+══════════════════════════════════════════════════════ */
+.rtl{direction:rtl;text-align:right}
+.ltr{direction:ltr;text-align:left}
+@media(min-width:480px){.lang-grid,.tp-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:720px){.v-pane,.e-pane,.qz-wrap{max-width:680px;margin:0 auto}.tp-grid{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- ██████████████ WELCOME SCREEN ██████████████ -->
+<div id="s-welcome" class="screen on">
+  <div class="w-hero">
+    <div class="w-logo-wrap">
+      <div class="w-logo-icon">📖</div>
+      <div class="w-brand">Med<em>Lingua</em></div>
+    </div>
+    <div class="w-tagline">Master any language with structured lessons, native audio, and smart quizzes.</div>
+    <div class="w-features">
+      <span class="w-feat">🔊 Native Audio</span>
+      <span class="w-feat">🎯 Adaptive Quizzes</span>
+      <span class="w-feat">📚 A1 → C2</span>
+      <span class="w-feat">5 Languages</span>
+    </div>
+  </div>
+  <div class="w-card au">
+    <div class="w-section">
+      <div class="w-label"><span class="w-step">1</span><span id="lbl-native">My native language</span></div>
+      <div class="lang-grid" id="native-grid"></div>
+    </div>
+    <div class="w-section">
+      <div class="w-label"><span class="w-step">2</span><span id="lbl-target">I want to learn</span></div>
+      <div class="lang-grid" id="target-grid"></div>
+    </div>
+    <button class="w-cta" id="go-btn" disabled><span id="go-text">Select both languages</span></button>
+  </div>
+</div>
+
+<!-- ██████████████ APP SCREEN ██████████████ -->
+<div id="s-app" class="screen">
+  <header class="app-hdr" id="app-hdr">
+    <div class="hdr-logo">Med<em>Lingua</em></div>
+    <div class="hdr-pair" id="hdr-pair">🌍→🌍</div>
+  </header>
+  <div class="page" id="page"></div>
+  <nav class="bnav">
+    <button class="bnav-btn on" id="nb-home" onclick="gp('home')"><div class="bnav-icon">🏠</div><span id="nbl-home">Home</span></button>
+    <button class="bnav-btn"    id="nb-levels" onclick="gp('levels')"><div class="bnav-icon">📚</div><span id="nbl-levels">Levels</span></button>
+    <button class="bnav-btn"    id="nb-saved" onclick="gp('saved')"><div class="bnav-icon">⭐</div><span id="nbl-saved">Saved</span></button>
+  </nav>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   LANGUAGE METADATA
+══════════════════════════════════════════════════════════ */
+const LM={
+  en:{name:"English",  nat:"English",  flag:"🇬🇧",tts:"en-US",dir:"ltr"},
+  ar:{name:"Arabic",   nat:"العربية",  flag:"🇸🇦",tts:"ar-SA",dir:"rtl"},
+  fr:{name:"French",   nat:"Français", flag:"🇫🇷",tts:"fr-FR",dir:"ltr"},
+  de:{name:"German",   nat:"Deutsch",  flag:"🇩🇪",tts:"de-DE",dir:"ltr"},
+  it:{name:"Italian",  nat:"Italiano", flag:"🇮🇹",tts:"it-IT",dir:"ltr"},
+};
+
+/* ══════════════════════════════════════════════════════════
+   UI STRINGS — All interface labels in the user's native language ONLY.
+   ⚠ Rule: Never display these in the target language.
+══════════════════════════════════════════════════════════ */
+const UIS={
+  en:{nl:"My native language",tl:"I want to learn",go:"Start Learning →",home:"Home",levels:"Levels",saved:"Saved",vocab:"Vocabulary",exs:"Examples",startQ:"Take Quiz 🎯",retry:"Try Again 🔁",backL:"← Back to Lesson",correct:"✅ Correct!",wrong:"❌ Wrong!",score:"Score",of:"out of",exc:"Excellent! 🎉",good:"Well Done! 👍",keep:"Keep Practicing! 💪",prog:"Overall Progress",done:"completed",trn:"Translation",rule:"Lesson Rule",ruleT:"Target language shown above · Your translation below",eNote:"Listen to each sentence then read both the original and translation.",words:"words",next:"Next →",finish:"See Results →",noSaved:"No saved words yet.",noSavedS:"Tap ⭐ on any word in a lesson to save it here.",goLevels:"Browse Levels"},
+  ar:{nl:"لغتي الأم",tl:"أريد تعلم",go:"ابدأ التعلم →",home:"الرئيسية",levels:"المستويات",saved:"المحفوظة",vocab:"المفردات",exs:"أمثلة",startQ:"ابدأ الاختبار 🎯",retry:"حاول مجدداً 🔁",backL:"← العودة للدرس",correct:"✅ صحيح!",wrong:"❌ خطأ!",score:"النتيجة",of:"من",exc:"ممتاز! 🎉",good:"أحسنت! 👍",keep:"استمر في التدريب! 💪",prog:"التقدم الكلي",done:"مكتمل",trn:"الترجمة",rule:"قاعدة الدرس",ruleT:"الكلمات بلغة الهدف في الأعلى · ترجمتك في الأسفل",eNote:"استمع لكل جملة ثم اقرأ الأصل والترجمة.",words:"كلمة",next:"التالي →",finish:"انظر النتائج →",noSaved:"لا توجد كلمات محفوظة بعد.",noSavedS:"اضغط ⭐ على أي كلمة في درس لحفظها هنا.",goLevels:"تصفح المستويات"},
+  fr:{nl:"Ma langue maternelle",tl:"Je veux apprendre",go:"Commencer →",home:"Accueil",levels:"Niveaux",saved:"Sauvegardés",vocab:"Vocabulaire",exs:"Exemples",startQ:"Commencer le quiz 🎯",retry:"Réessayer 🔁",backL:"← Retour à la leçon",correct:"✅ Correct!",wrong:"❌ Faux!",score:"Score",of:"sur",exc:"Excellent! 🎉",good:"Bien joué! 👍",keep:"Continuez! 💪",prog:"Progression globale",done:"complétées",trn:"Traduction",rule:"Règle de la leçon",ruleT:"Langue cible ci-dessus · Votre traduction ci-dessous",eNote:"Écoutez chaque phrase puis lisez l'original et la traduction.",words:"mots",next:"Suivant →",finish:"Voir les résultats →",noSaved:"Aucun mot sauvegardé.",noSavedS:"Appuyez sur ⭐ sur n'importe quel mot pour le sauvegarder ici.",goLevels:"Voir les niveaux"},
+  de:{nl:"Meine Muttersprache",tl:"Ich möchte lernen",go:"Lernen starten →",home:"Start",levels:"Stufen",saved:"Gespeichert",vocab:"Wortschatz",exs:"Beispiele",startQ:"Quiz starten 🎯",retry:"Nochmal 🔁",backL:"← Zurück zur Lektion",correct:"✅ Richtig!",wrong:"❌ Falsch!",score:"Ergebnis",of:"von",exc:"Ausgezeichnet! 🎉",good:"Gut gemacht! 👍",keep:"Weiter üben! 💪",prog:"Gesamtfortschritt",done:"abgeschlossen",trn:"Übersetzung",rule:"Lektionsregel",ruleT:"Zielsprache oben · Deine Übersetzung unten",eNote:"Höre jeden Satz und lies Original und Übersetzung.",words:"Wörter",next:"Weiter →",finish:"Ergebnisse →",noSaved:"Keine gespeicherten Wörter.",noSavedS:"Tippe ⭐ auf ein Wort um es zu speichern.",goLevels:"Stufen durchsuchen"},
+  it:{nl:"La mia lingua madre",tl:"Voglio imparare",go:"Inizia →",home:"Home",levels:"Livelli",saved:"Salvate",vocab:"Vocabolario",exs:"Esempi",startQ:"Inizia il quiz 🎯",retry:"Riprova 🔁",backL:"← Torna alla lezione",correct:"✅ Corretto!",wrong:"❌ Sbagliato!",score:"Punteggio",of:"su",exc:"Eccellente! 🎉",good:"Bravo! 👍",keep:"Continua! 💪",prog:"Progresso totale",done:"completate",trn:"Traduzione",rule:"Regola della lezione",ruleT:"Lingua target sopra · La tua traduzione sotto",eNote:"Ascolta ogni frase poi leggi originale e traduzione.",words:"parole",next:"Avanti →",finish:"Vedi risultati →",noSaved:"Nessuna parola salvata.",noSavedS:"Premi ⭐ su una parola per salvarla qui.",goLevels:"Vedi livelli"},
+};
+
+/* ══════════════════════════════════════════════════════════
+   FULL CURRICULUM DATABASE
+   
+   RULES enforced in data:
+   • Each word: word[langCode] = word in that language (all 5 present)
+   • Each example: ex[langCode] = full sentence in that language
+   • Quiz uses ONLY vocab from the current lesson
+   • Target language displayed → Native language for answer options
+══════════════════════════════════════════════════════════ */
+const C={
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   A1 — BEGINNER  (10 topics)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+A1:{col:"#059669",grad:"linear-gradient(135deg,#047857,#059669)",title:{en:"Beginner",ar:"مبتدئ",fr:"Débutant",de:"Anfänger",it:"Principiante"},
+topics:[
+{id:"greetings",icon:"👋",title:{en:"Greetings",ar:"التحيات",fr:"Salutations",de:"Begrüßungen",it:"Saluti"},
+intro:{en:"The most common greetings used every day.",ar:"أكثر التحيات شيوعاً في كل يوم.",fr:"Les salutations les plus courantes du quotidien.",de:"Die häufigsten Begrüßungen des Alltags.",it:"I saluti più comuni della vita quotidiana."},
+vocab:[
+{e:"👋",en:"Hello",fr:"Bonjour",de:"Hallo",it:"Ciao",ar:"مرحباً"},
+{e:"🤝",en:"Goodbye",fr:"Au revoir",de:"Auf Wiedersehen",it:"Arrivederci",ar:"وداعاً"},
+{e:"🌅",en:"Good morning",fr:"Bonjour",de:"Guten Morgen",it:"Buongiorno",ar:"صباح الخير"},
+{e:"🌆",en:"Good evening",fr:"Bonsoir",de:"Guten Abend",it:"Buonasera",ar:"مساء الخير"},
+{e:"🌙",en:"Good night",fr:"Bonne nuit",de:"Gute Nacht",it:"Buonanotte",ar:"تصبح على خير"},
+{e:"🙏",en:"Thank you",fr:"Merci",de:"Danke",it:"Grazie",ar:"شكراً"},
+{e:"😊",en:"Please",fr:"S'il vous plaît",de:"Bitte",it:"Per favore",ar:"من فضلك"},
+{e:"😔",en:"Sorry",fr:"Pardon",de:"Entschuldigung",it:"Scusa",ar:"آسف"},
+{e:"👍",en:"You're welcome",fr:"De rien",de:"Bitte sehr",it:"Prego",ar:"عفواً"},
+{e:"❓",en:"How are you?",fr:"Comment allez-vous?",de:"Wie geht es Ihnen?",it:"Come stai?",ar:"كيف حالك؟"},
+],
+ex:[
+{en:"Hello! Good morning. How are you?",fr:"Bonjour! Bonjour. Comment allez-vous?",de:"Hallo! Guten Morgen. Wie geht es Ihnen?",it:"Ciao! Buongiorno. Come stai?",ar:"مرحباً! صباح الخير. كيف حالك؟"},
+{en:"Thank you very much! You're welcome.",fr:"Merci beaucoup! De rien.",de:"Vielen Dank! Bitte sehr.",it:"Grazie mille! Prego.",ar:"شكراً جزيلاً! عفواً."},
+{en:"Sorry, goodbye! Good night.",fr:"Pardon, au revoir! Bonne nuit.",de:"Entschuldigung, auf Wiedersehen! Gute Nacht.",it:"Scusa, arrivederci! Buonanotte.",ar:"آسف، وداعاً! تصبح على خير."},
+]},
+
+{id:"introductions",icon:"🪪",title:{en:"Introductions",ar:"التعريف بالنفس",fr:"Se présenter",de:"Vorstellungen",it:"Presentazioni"},
+intro:{en:"How to introduce yourself and ask others about themselves.",ar:"كيف تعرّف بنفسك وتسأل الآخرين.",fr:"Comment se présenter et demander aux autres.",de:"Wie man sich vorstellt und andere fragt.",it:"Come presentarsi e chiedere agli altri."},
+vocab:[
+{e:"📛",en:"What is your name?",fr:"Comment vous appelez-vous?",de:"Wie heißen Sie?",it:"Come si chiama?",ar:"ما اسمك؟"},
+{e:"🏷️",en:"My name is...",fr:"Je m'appelle...",de:"Mein Name ist...",it:"Mi chiamo...",ar:"اسمي..."},
+{e:"🎂",en:"How old are you?",fr:"Quel âge avez-vous?",de:"Wie alt sind Sie?",it:"Quanti anni ha?",ar:"كم عمرك؟"},
+{e:"🔢",en:"I am ... years old",fr:"J'ai ... ans",de:"Ich bin ... Jahre alt",it:"Ho ... anni",ar:"عمري ... سنة"},
+{e:"🏠",en:"Where do you live?",fr:"Où habitez-vous?",de:"Wo wohnen Sie?",it:"Dove abita?",ar:"أين تسكن؟"},
+{e:"🌍",en:"I am from...",fr:"Je viens de...",de:"Ich komme aus...",it:"Vengo da...",ar:"أنا من..."},
+{e:"💼",en:"What do you do?",fr:"Que faites-vous?",de:"Was machen Sie beruflich?",it:"Cosa fa di lavoro?",ar:"ماذا تعمل؟"},
+{e:"🎓",en:"I am a student",fr:"Je suis étudiant(e)",de:"Ich bin Student",it:"Sono studente",ar:"أنا طالب"},
+{e:"😄",en:"Nice to meet you",fr:"Enchanté(e)",de:"Schön, Sie kennenzulernen",it:"Piacere di conoscerti",ar:"يسعدني لقاؤك"},
+{e:"🌐",en:"Do you speak English?",fr:"Parlez-vous anglais?",de:"Sprechen Sie Englisch?",it:"Parla inglese?",ar:"هل تتكلم الإنجليزية؟"},
+],
+ex:[
+{en:"Hello! My name is Lena. I am 25 years old.",fr:"Bonjour! Je m'appelle Lena. J'ai 25 ans.",de:"Hallo! Mein Name ist Lena. Ich bin 25 Jahre alt.",it:"Ciao! Mi chiamo Lena. Ho 25 anni.",ar:"مرحباً! اسمي لينا. عمري 25 سنة."},
+{en:"I am from France. I live in Paris. Nice to meet you!",fr:"Je viens de France. J'habite à Paris. Enchanté!",de:"Ich komme aus Frankreich. Ich wohne in Paris. Schön, Sie kennenzulernen!",it:"Vengo dalla Francia. Abito a Parigi. Piacere!",ar:"أنا من فرنسا. أسكن في باريس. يسعدني لقاؤك!"},
+{en:"What do you do? I am a student. Do you speak French?",fr:"Que faites-vous? Je suis étudiant. Parlez-vous français?",de:"Was machen Sie? Ich bin Student. Sprechen Sie Französisch?",it:"Cosa fa? Sono studente. Parla francese?",ar:"ماذا تعمل؟ أنا طالب. هل تتكلم الفرنسية؟"},
+]},
+
+{id:"numbers",icon:"🔢",title:{en:"Numbers 0–100",ar:"الأرقام ٠–١٠٠",fr:"Chiffres 0–100",de:"Zahlen 0–100",it:"Numeri 0–100"},
+intro:{en:"Numbers from 0 to 100 — essential for shopping, time, and daily life.",ar:"الأرقام من 0 إلى 100 — ضرورية للتسوق والوقت والحياة اليومية.",fr:"Les chiffres de 0 à 100 — indispensables pour les achats, le temps et la vie quotidienne.",de:"Zahlen von 0 bis 100 — unverzichtbar für Einkaufen, Zeit und den Alltag.",it:"I numeri da 0 a 100 — indispensabili per gli acquisti, il tempo e la vita quotidiana."},
+vocab:[
+{e:"0️⃣",en:"Zero",fr:"Zéro",de:"Null",it:"Zero",ar:"صفر"},
+{e:"1️⃣",en:"One",fr:"Un",de:"Eins",it:"Uno",ar:"واحد"},
+{e:"2️⃣",en:"Two",fr:"Deux",de:"Zwei",it:"Due",ar:"اثنان"},
+{e:"3️⃣",en:"Three",fr:"Trois",de:"Drei",it:"Tre",ar:"ثلاثة"},
+{e:"5️⃣",en:"Five",fr:"Cinq",de:"Fünf",it:"Cinque",ar:"خمسة"},
+{e:"🔟",en:"Ten",fr:"Dix",de:"Zehn",it:"Dieci",ar:"عشرة"},
+{e:"2️⃣0️⃣",en:"Twenty",fr:"Vingt",de:"Zwanzig",it:"Venti",ar:"عشرون"},
+{e:"5️⃣0️⃣",en:"Fifty",fr:"Cinquante",de:"Fünfzig",it:"Cinquanta",ar:"خمسون"},
+{e:"💯",en:"One hundred",fr:"Cent",de:"Hundert",it:"Cento",ar:"مائة"},
+{e:"🔢",en:"How many?",fr:"Combien?",de:"Wie viele?",it:"Quanti?",ar:"كم عدد؟"},
+],
+ex:[
+{en:"I have ten books and twenty pens.",fr:"J'ai dix livres et vingt stylos.",de:"Ich habe zehn Bücher und zwanzig Stifte.",it:"Ho dieci libri e venti penne.",ar:"لدي عشرة كتب وعشرون قلم."},
+{en:"How many? Fifty students in the class.",fr:"Combien? Cinquante étudiants dans la classe.",de:"Wie viele? Fünfzig Schüler in der Klasse.",it:"Quanti? Cinquanta studenti in classe.",ar:"كم عدد؟ خمسون طالباً في الفصل."},
+{en:"The price is one hundred euros.",fr:"Le prix est cent euros.",de:"Der Preis ist hundert Euro.",it:"Il prezzo è cento euro.",ar:"السعر مائة يورو."},
+]},
+
+{id:"colors",icon:"🎨",title:{en:"Colors",ar:"الألوان",fr:"Couleurs",de:"Farben",it:"Colori"},
+intro:{en:"Learn the essential colors to describe people, objects, and places.",ar:"تعلم الألوان الأساسية لوصف الأشخاص والأشياء والأماكن.",fr:"Apprenez les couleurs essentielles pour décrire personnes, objets et lieux.",de:"Lerne die wesentlichen Farben zur Beschreibung von Personen, Objekten und Orten.",it:"Impara i colori essenziali per descrivere persone, oggetti e luoghi."},
+vocab:[
+{e:"🔴",en:"Red",fr:"Rouge",de:"Rot",it:"Rosso",ar:"أحمر"},
+{e:"🔵",en:"Blue",fr:"Bleu",de:"Blau",it:"Blu",ar:"أزرق"},
+{e:"🟢",en:"Green",fr:"Vert",de:"Grün",it:"Verde",ar:"أخضر"},
+{e:"🟡",en:"Yellow",fr:"Jaune",de:"Gelb",it:"Giallo",ar:"أصفر"},
+{e:"⚪",en:"White",fr:"Blanc",de:"Weiß",it:"Bianco",ar:"أبيض"},
+{e:"⚫",en:"Black",fr:"Noir",de:"Schwarz",it:"Nero",ar:"أسود"},
+{e:"🟠",en:"Orange",fr:"Orange",de:"Orange",it:"Arancione",ar:"برتقالي"},
+{e:"🟣",en:"Purple",fr:"Violet",de:"Lila",it:"Viola",ar:"بنفسجي"},
+{e:"🟤",en:"Brown",fr:"Marron",de:"Braun",it:"Marrone",ar:"بني"},
+{e:"🩷",en:"Pink",fr:"Rose",de:"Rosa",it:"Rosa",ar:"وردي"},
+],
+ex:[
+{en:"The sky is blue. The grass is green.",fr:"Le ciel est bleu. L'herbe est verte.",de:"Der Himmel ist blau. Das Gras ist grün.",it:"Il cielo è blu. L'erba è verde.",ar:"السماء زرقاء. العشب أخضر."},
+{en:"She wears a red dress and black shoes.",fr:"Elle porte une robe rouge et des chaussures noires.",de:"Sie trägt ein rotes Kleid und schwarze Schuhe.",it:"Lei indossa un vestito rosso e scarpe nere.",ar:"هي ترتدي فستاناً أحمر وحذاءً أسود."},
+{en:"I like orange and pink flowers.",fr:"J'aime les fleurs orange et roses.",de:"Ich mag orange und rosafarbene Blumen.",it:"Mi piacciono i fiori arancioni e rosa.",ar:"أحب الزهور البرتقالية والوردية."},
+]},
+
+{id:"family",icon:"👨‍👩‍👧",title:{en:"Family",ar:"العائلة",fr:"Famille",de:"Familie",it:"Famiglia"},
+intro:{en:"Family vocabulary — used constantly in conversation.",ar:"مفردات العائلة — تُستخدم باستمرار في المحادثات.",fr:"Le vocabulaire de la famille — utilisé constamment en conversation.",de:"Familienvokabular — ständig in Gesprächen verwendet.",it:"Vocabolario della famiglia — usato costantemente nelle conversazioni."},
+vocab:[
+{e:"👨",en:"Father",fr:"Père",de:"Vater",it:"Padre",ar:"أب"},
+{e:"👩",en:"Mother",fr:"Mère",de:"Mutter",it:"Madre",ar:"أم"},
+{e:"👦",en:"Brother",fr:"Frère",de:"Bruder",it:"Fratello",ar:"أخ"},
+{e:"👧",en:"Sister",fr:"Sœur",de:"Schwester",it:"Sorella",ar:"أخت"},
+{e:"👶",en:"Son",fr:"Fils",de:"Sohn",it:"Figlio",ar:"ابن"},
+{e:"🧒",en:"Daughter",fr:"Fille",de:"Tochter",it:"Figlia",ar:"ابنة"},
+{e:"👴",en:"Grandfather",fr:"Grand-père",de:"Großvater",it:"Nonno",ar:"جد"},
+{e:"👵",en:"Grandmother",fr:"Grand-mère",de:"Großmutter",it:"Nonna",ar:"جدة"},
+{e:"👫",en:"Husband",fr:"Mari",de:"Ehemann",it:"Marito",ar:"زوج"},
+{e:"💑",en:"Wife",fr:"Femme",de:"Ehefrau",it:"Moglie",ar:"زوجة"},
+],
+ex:[
+{en:"My father and mother are very kind.",fr:"Mon père et ma mère sont très gentils.",de:"Mein Vater und meine Mutter sind sehr freundlich.",it:"Mio padre e mia madre sono molto gentili.",ar:"والدي وأمي لطيفان جداً."},
+{en:"I have a brother, a sister, and a son.",fr:"J'ai un frère, une sœur et un fils.",de:"Ich habe einen Bruder, eine Schwester und einen Sohn.",it:"Ho un fratello, una sorella e un figlio.",ar:"لدي أخ وأخت وابن."},
+{en:"My grandparents live near us.",fr:"Mes grands-parents habitent près de chez nous.",de:"Meine Großeltern wohnen in unserer Nähe.",it:"I miei nonni abitano vicino a noi.",ar:"أجدادي يعيشون بالقرب منا."},
+]},
+
+{id:"food",icon:"🍎",title:{en:"Food & Drinks",ar:"الطعام والمشروبات",fr:"Nourriture et boissons",de:"Essen & Trinken",it:"Cibo e bevande"},
+intro:{en:"Essential food and drink vocabulary for everyday life.",ar:"مفردات الطعام والشراب الأساسية للحياة اليومية.",fr:"Vocabulaire essentiel sur la nourriture et les boissons.",de:"Wesentlicher Wortschatz für Essen und Trinken im Alltag.",it:"Vocabolario essenziale su cibo e bevande per la vita quotidiana."},
+vocab:[
+{e:"🍞",en:"Bread",fr:"Pain",de:"Brot",it:"Pane",ar:"خبز"},
+{e:"💧",en:"Water",fr:"Eau",de:"Wasser",it:"Acqua",ar:"ماء"},
+{e:"☕",en:"Coffee",fr:"Café",de:"Kaffee",it:"Caffè",ar:"قهوة"},
+{e:"🍎",en:"Apple",fr:"Pomme",de:"Apfel",it:"Mela",ar:"تفاحة"},
+{e:"🥛",en:"Milk",fr:"Lait",de:"Milch",it:"Latte",ar:"حليب"},
+{e:"🍗",en:"Chicken",fr:"Poulet",de:"Hähnchen",it:"Pollo",ar:"دجاج"},
+{e:"🍚",en:"Rice",fr:"Riz",de:"Reis",it:"Riso",ar:"أرز"},
+{e:"🥗",en:"Salad",fr:"Salade",de:"Salat",it:"Insalata",ar:"سلطة"},
+{e:"🍰",en:"Cake",fr:"Gâteau",de:"Kuchen",it:"Torta",ar:"كعكة"},
+{e:"🍊",en:"Orange",fr:"Orange",de:"Orange",it:"Arancia",ar:"برتقالة"},
+],
+ex:[
+{en:"I would like water and bread, please.",fr:"Je voudrais de l'eau et du pain, s'il vous plaît.",de:"Ich möchte bitte Wasser und Brot.",it:"Vorrei acqua e pane, per favore.",ar:"أريد ماء وخبز من فضلك."},
+{en:"Do you want coffee or milk?",fr:"Voulez-vous du café ou du lait?",de:"Möchten Sie Kaffee oder Milch?",it:"Vuole caffè o latte?",ar:"هل تريد قهوة أم حليب؟"},
+{en:"The salad with chicken is very good.",fr:"La salade au poulet est très bonne.",de:"Der Salat mit Hähnchen ist sehr gut.",it:"L'insalata con pollo è molto buona.",ar:"السلطة مع الدجاج لذيذة جداً."},
+]},
+
+{id:"days",icon:"📅",title:{en:"Days & Time",ar:"الأيام والوقت",fr:"Jours et temps",de:"Tage & Zeit",it:"Giorni e tempo"},
+intro:{en:"Days of the week and time expressions for daily planning.",ar:"أيام الأسبوع وتعبيرات الوقت للتخطيط اليومي.",fr:"Jours de la semaine et expressions temporelles pour la planification.",de:"Wochentage und Zeitausdrücke zur täglichen Planung.",it:"Giorni della settimana ed espressioni temporali per la pianificazione."},
+vocab:[
+{e:"📅",en:"Today",fr:"Aujourd'hui",de:"Heute",it:"Oggi",ar:"اليوم"},
+{e:"🌅",en:"Tomorrow",fr:"Demain",de:"Morgen",it:"Domani",ar:"غداً"},
+{e:"⏪",en:"Yesterday",fr:"Hier",de:"Gestern",it:"Ieri",ar:"أمس"},
+{e:"🌄",en:"Morning",fr:"Matin",de:"Morgen",it:"Mattina",ar:"صباح"},
+{e:"🌞",en:"Afternoon",fr:"Après-midi",de:"Nachmittag",it:"Pomeriggio",ar:"بعد الظهر"},
+{e:"🌙",en:"Night",fr:"Nuit",de:"Nacht",it:"Notte",ar:"ليل"},
+{e:"📆",en:"Week",fr:"Semaine",de:"Woche",it:"Settimana",ar:"أسبوع"},
+{e:"📆",en:"Monday",fr:"Lundi",de:"Montag",it:"Lunedì",ar:"الاثنين"},
+{e:"📆",en:"Friday",fr:"Vendredi",de:"Freitag",it:"Venerdì",ar:"الجمعة"},
+{e:"🕐",en:"What time is it?",fr:"Quelle heure est-il?",de:"Wie spät ist es?",it:"Che ora è?",ar:"كم الساعة؟"},
+],
+ex:[
+{en:"Today is Monday. Tomorrow is Tuesday.",fr:"Aujourd'hui c'est lundi. Demain c'est mardi.",de:"Heute ist Montag. Morgen ist Dienstag.",it:"Oggi è lunedì. Domani è martedì.",ar:"اليوم الاثنين. غداً الثلاثاء."},
+{en:"What time is it? It is three o'clock in the afternoon.",fr:"Quelle heure est-il? Il est trois heures de l'après-midi.",de:"Wie spät ist es? Es ist drei Uhr nachmittags.",it:"Che ora è? Sono le tre del pomeriggio.",ar:"كم الساعة؟ الساعة الثالثة بعد الظهر."},
+{en:"Yesterday morning I went to the market.",fr:"Hier matin je suis allé au marché.",de:"Gestern Morgen bin ich auf den Markt gegangen.",it:"Ieri mattina sono andato al mercato.",ar:"أمس صباحاً ذهبت إلى السوق."},
+]},
+
+{id:"verbs",icon:"⚡",title:{en:"Basic Verbs",ar:"الأفعال الأساسية",fr:"Verbes de base",de:"Grundverben",it:"Verbi fondamentali"},
+intro:{en:"The most important verbs — master these to build any sentence.",ar:"أهم الأفعال — أتقنها لبناء أي جملة.",fr:"Les verbes les plus importants — maîtrisez-les pour construire n'importe quelle phrase.",de:"Die wichtigsten Verben — beherrsche sie, um jeden Satz zu bilden.",it:"I verbi più importanti — padroneggiamoli per costruire qualsiasi frase."},
+vocab:[
+{e:"🧍",en:"To be",fr:"Être",de:"Sein",it:"Essere",ar:"يكون"},
+{e:"✋",en:"To have",fr:"Avoir",de:"Haben",it:"Avere",ar:"يملك"},
+{e:"🚶",en:"To go",fr:"Aller",de:"Gehen",it:"Andare",ar:"يذهب"},
+{e:"🍽️",en:"To eat",fr:"Manger",de:"Essen",it:"Mangiare",ar:"يأكل"},
+{e:"💧",en:"To drink",fr:"Boire",de:"Trinken",it:"Bere",ar:"يشرب"},
+{e:"🗣️",en:"To speak",fr:"Parler",de:"Sprechen",it:"Parlare",ar:"يتكلم"},
+{e:"💭",en:"To want",fr:"Vouloir",de:"Wollen",it:"Volere",ar:"يريد"},
+{e:"📖",en:"To know",fr:"Savoir",de:"Wissen",it:"Sapere",ar:"يعرف"},
+{e:"❤️",en:"To like",fr:"Aimer",de:"Mögen",it:"Piacere",ar:"يحب"},
+{e:"🚪",en:"To come",fr:"Venir",de:"Kommen",it:"Venire",ar:"يأتي"},
+],
+ex:[
+{en:"I want to eat and drink now.",fr:"Je veux manger et boire maintenant.",de:"Ich möchte jetzt essen und trinken.",it:"Voglio mangiare e bere adesso.",ar:"أريد أن آكل وأشرب الآن."},
+{en:"She knows how to speak very well.",fr:"Elle sait bien parler.",de:"Sie weiß, wie man gut spricht.",it:"Lei sa parlare molto bene.",ar:"هي تعرف كيف تتكلم جيداً."},
+{en:"We like to go out and come back home.",fr:"Nous aimons sortir et rentrer à la maison.",de:"Wir mögen es, auszugehen und nach Hause zu kommen.",it:"Ci piace uscire e tornare a casa.",ar:"نحب الخروج والعودة إلى البيت."},
+]},
+
+{id:"questions",icon:"❓",title:{en:"Question Words",ar:"أدوات الاستفهام",fr:"Mots interrogatifs",de:"Fragewörter",it:"Parole interrogative"},
+intro:{en:"Question words are the backbone of conversation. Learn them all.",ar:"أدوات الاستفهام هي عمود المحادثة. تعلمها جميعاً.",fr:"Les mots interrogatifs sont l'épine dorsale de la conversation.",de:"Fragewörter sind das Rückgrat der Konversation. Lerne sie alle.",it:"Le parole interrogative sono la spina dorsale della conversazione."},
+vocab:[
+{e:"👤",en:"Who?",fr:"Qui?",de:"Wer?",it:"Chi?",ar:"من؟"},
+{e:"❓",en:"What?",fr:"Quoi?",de:"Was?",it:"Cosa?",ar:"ماذا؟"},
+{e:"📍",en:"Where?",fr:"Où?",de:"Wo?",it:"Dove?",ar:"أين؟"},
+{e:"🕐",en:"When?",fr:"Quand?",de:"Wann?",it:"Quando?",ar:"متى؟"},
+{e:"🤔",en:"Why?",fr:"Pourquoi?",de:"Warum?",it:"Perché?",ar:"لماذا؟"},
+{e:"🛠️",en:"How?",fr:"Comment?",de:"Wie?",it:"Come?",ar:"كيف؟"},
+{e:"💰",en:"How much?",fr:"Combien?",de:"Wie viel?",it:"Quanto?",ar:"كم؟"},
+{e:"🔘",en:"Which?",fr:"Quel/Quelle?",de:"Welche?",it:"Quale?",ar:"أيّ؟"},
+{e:"✅",en:"Is it...?",fr:"Est-ce...?",de:"Ist es...?",it:"È...?",ar:"هل هو...؟"},
+{e:"🔢",en:"How many?",fr:"Combien de?",de:"Wie viele?",it:"Quanti?",ar:"كم عدد؟"},
+],
+ex:[
+{en:"Who is your teacher? Where is the school?",fr:"Qui est ton professeur? Où est l'école?",de:"Wer ist dein Lehrer? Wo ist die Schule?",it:"Chi è il tuo insegnante? Dov'è la scuola?",ar:"من هو معلمك؟ أين المدرسة؟"},
+{en:"Why are you studying? How do you practice?",fr:"Pourquoi étudies-tu? Comment tu t'entraînes?",de:"Warum lernst du? Wie übst du?",it:"Perché studi? Come ti eserciti?",ar:"لماذا تدرس؟ كيف تتمرن؟"},
+{en:"How much does it cost? Which one do you want?",fr:"Combien ça coûte? Lequel veux-tu?",de:"Wie viel kostet es? Welches möchten Sie?",it:"Quanto costa? Quale vuoi?",ar:"بكم هذا؟ أيّ واحد تريد؟"},
+]},
+
+{id:"sentences",icon:"📝",title:{en:"Simple Sentences",ar:"جمل بسيطة",fr:"Phrases simples",de:"Einfache Sätze",it:"Frasi semplici"},
+intro:{en:"Build your first sentences using what you have learned.",ar:"ابنِ جملك الأولى باستخدام ما تعلمته.",fr:"Construisez vos premières phrases avec ce que vous avez appris.",de:"Baue deine ersten Sätze aus dem Gelernten.",it:"Costruisci le tue prime frasi usando ciò che hai imparato."},
+vocab:[
+{e:"✅",en:"Yes",fr:"Oui",de:"Ja",it:"Sì",ar:"نعم"},
+{e:"❌",en:"No",fr:"Non",de:"Nein",it:"No",ar:"لا"},
+{e:"🤔",en:"Maybe",fr:"Peut-être",de:"Vielleicht",it:"Forse",ar:"ربما"},
+{e:"😌",en:"I understand",fr:"Je comprends",de:"Ich verstehe",it:"Capisco",ar:"أفهم"},
+{e:"😕",en:"I don't understand",fr:"Je ne comprends pas",de:"Ich verstehe nicht",it:"Non capisco",ar:"لا أفهم"},
+{e:"🔄",en:"Can you repeat?",fr:"Pouvez-vous répéter?",de:"Können Sie wiederholen?",it:"Può ripetere?",ar:"هل يمكنك التكرار؟"},
+{e:"🐢",en:"Speak slowly please",fr:"Parlez lentement s'il vous plaît",de:"Bitte sprechen Sie langsam",it:"Parla lentamente per favore",ar:"تكلم ببطء من فضلك"},
+{e:"📖",en:"What does ... mean?",fr:"Que signifie...?",de:"Was bedeutet...?",it:"Cosa significa...?",ar:"ماذا تعني...؟"},
+{e:"💬",en:"I need help",fr:"J'ai besoin d'aide",de:"Ich brauche Hilfe",it:"Ho bisogno di aiuto",ar:"أحتاج مساعدة"},
+{e:"🆗",en:"That's correct",fr:"C'est correct",de:"Das ist richtig",it:"È corretto",ar:"هذا صحيح"},
+],
+ex:[
+{en:"Yes, I understand. Can you repeat please?",fr:"Oui, je comprends. Pouvez-vous répéter s'il vous plaît?",de:"Ja, ich verstehe. Können Sie bitte wiederholen?",it:"Sì, capisco. Può ripetere per favore?",ar:"نعم، أفهم. هل يمكنك التكرار من فضلك؟"},
+{en:"I don't understand. Speak slowly please.",fr:"Je ne comprends pas. Parlez lentement s'il vous plaît.",de:"Ich verstehe nicht. Bitte sprechen Sie langsam.",it:"Non capisco. Parla lentamente per favore.",ar:"لا أفهم. تكلم ببطء من فضلك."},
+{en:"What does this mean? I need help.",fr:"Que signifie cela? J'ai besoin d'aide.",de:"Was bedeutet das? Ich brauche Hilfe.",it:"Cosa significa questo? Ho bisogno di aiuto.",ar:"ماذا يعني هذا؟ أحتاج مساعدة."},
+]},
+]}, // end A1
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   A2 — ELEMENTARY  (8 topics — FULL)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+A2:{col:"#2563EB",grad:"linear-gradient(135deg,#1D4ED8,#2563EB)",title:{en:"Elementary",ar:"ابتدائي",fr:"Élémentaire",de:"Grundkenntnisse",it:"Elementare"},
+topics:[
+{id:"daily_conv",icon:"🗣️",title:{en:"Daily Conversations",ar:"محادثات يومية",fr:"Conversations quotidiennes",de:"Alltagsgespräche",it:"Conversazioni quotidiane"},
+intro:{en:"Everyday phrases for smooth conversations.",ar:"عبارات يومية للمحادثات السلسة.",fr:"Expressions quotidiennes pour des conversations fluides.",de:"Alltagsphrasen für reibungslose Gespräche.",it:"Frasi quotidiane per conversazioni fluide."},
+vocab:[
+{e:"☀️",en:"How was your day?",fr:"Comment s'est passée ta journée?",de:"Wie war dein Tag?",it:"Com'è andata la giornata?",ar:"كيف كان يومك؟"},
+{e:"👍",en:"It was good",fr:"C'était bien",de:"Es war gut",it:"È andata bene",ar:"كان جيداً"},
+{e:"😔",en:"Not so good",fr:"Pas très bien",de:"Nicht so gut",it:"Non tanto bene",ar:"ليس جيداً"},
+{e:"🌤️",en:"What's the weather like?",fr:"Quel temps fait-il?",de:"Wie ist das Wetter?",it:"Com'è il tempo?",ar:"كيف هو الطقس؟"},
+{e:"☀️",en:"It's sunny",fr:"Il fait beau",de:"Es ist sonnig",it:"C'è il sole",ar:"الجو مشمس"},
+{e:"🌧️",en:"It's raining",fr:"Il pleut",de:"Es regnet",it:"Sta piovendo",ar:"إنه يمطر"},
+{e:"🛒",en:"Let's go shopping",fr:"Allons faire les courses",de:"Lass uns einkaufen gehen",it:"Andiamo a fare shopping",ar:"هيا نتسوق"},
+{e:"🍽️",en:"Shall we eat?",fr:"On mange?",de:"Sollen wir essen?",it:"Mangiamo?",ar:"هل نأكل؟"},
+{e:"💤",en:"I'm tired",fr:"Je suis fatigué(e)",de:"Ich bin müde",it:"Sono stanco/a",ar:"أنا متعب"},
+{e:"🎉",en:"Let's celebrate!",fr:"Fêtons ça!",de:"Lass uns feiern!",it:"Festeggiamo!",ar:"هيا نحتفل!"},
+],
+ex:[
+{en:"How was your day? It was good, but I'm tired now.",fr:"Comment s'est passée ta journée? C'était bien, mais je suis fatigué maintenant.",de:"Wie war dein Tag? Es war gut, aber ich bin jetzt müde.",it:"Com'è andata la giornata? È andata bene, ma ora sono stanco.",ar:"كيف كان يومك؟ كان جيداً لكني متعب الآن."},
+{en:"What's the weather like? It's raining today.",fr:"Quel temps fait-il? Il pleut aujourd'hui.",de:"Wie ist das Wetter? Es regnet heute.",it:"Com'è il tempo? Sta piovendo oggi.",ar:"كيف هو الطقس؟ إنه يمطر اليوم."},
+{en:"Shall we eat? Yes, let's celebrate!",fr:"On mange? Oui, fêtons ça!",de:"Sollen wir essen? Ja, lass uns feiern!",it:"Mangiamo? Sì, festeggiamo!",ar:"هل نأكل؟ نعم، هيا نحتفل!"},
+]},
+
+{id:"shopping",icon:"🛍️",title:{en:"Shopping",ar:"التسوق",fr:"Shopping",de:"Einkaufen",it:"Fare shopping"},
+intro:{en:"Vocabulary for shopping — prices, sizes, and transactions.",ar:"مفردات التسوق — الأسعار والمقاسات والمعاملات.",fr:"Vocabulaire pour faire du shopping — prix, tailles et transactions.",de:"Vokabular für das Einkaufen — Preise, Größen und Transaktionen.",it:"Vocabolario per lo shopping — prezzi, taglie e transazioni."},
+vocab:[
+{e:"💰",en:"How much does it cost?",fr:"Combien ça coûte?",de:"Wie viel kostet es?",it:"Quanto costa?",ar:"بكم هذا؟"},
+{e:"💵",en:"It costs...",fr:"Ça coûte...",de:"Es kostet...",it:"Costa...",ar:"تكلف..."},
+{e:"🏷️",en:"Is it on sale?",fr:"Est-ce en solde?",de:"Ist es im Angebot?",it:"È in saldo?",ar:"هل هو بالتخفيض؟"},
+{e:"📏",en:"What size?",fr:"Quelle taille?",de:"Welche Größe?",it:"Che taglia?",ar:"ما المقاس؟"},
+{e:"🎨",en:"Do you have another color?",fr:"Vous avez une autre couleur?",de:"Haben Sie eine andere Farbe?",it:"Ha un altro colore?",ar:"هل لديك لون آخر؟"},
+{e:"💳",en:"I'll pay by card",fr:"Je paye par carte",de:"Ich zahle mit Karte",it:"Pago con carta",ar:"سأدفع ببطاقة"},
+{e:"💵",en:"I'll pay cash",fr:"Je paye en espèces",de:"Ich zahle bar",it:"Pago in contanti",ar:"سأدفع نقداً"},
+{e:"🧾",en:"Can I have a receipt?",fr:"Puis-je avoir un reçu?",de:"Kann ich einen Beleg haben?",it:"Posso avere lo scontrino?",ar:"هل يمكنني الحصول على إيصال؟"},
+{e:"↩️",en:"I'd like to return this",fr:"Je voudrais retourner ceci",de:"Ich möchte das zurückgeben",it:"Vorrei restituire questo",ar:"أريد إرجاع هذا"},
+{e:"🛒",en:"Where is the checkout?",fr:"Où est la caisse?",de:"Wo ist die Kasse?",it:"Dov'è la cassa?",ar:"أين الكاشير؟"},
+],
+ex:[
+{en:"How much does it cost? It costs twenty euros.",fr:"Combien ça coûte? Ça coûte vingt euros.",de:"Wie viel kostet es? Es kostet zwanzig Euro.",it:"Quanto costa? Costa venti euro.",ar:"بكم هذا؟ يكلف عشرين يورو."},
+{en:"Do you have another color? I'll pay by card.",fr:"Vous avez une autre couleur? Je paye par carte.",de:"Haben Sie eine andere Farbe? Ich zahle mit Karte.",it:"Ha un altro colore? Pago con carta.",ar:"هل لديك لون آخر؟ سأدفع ببطاقة."},
+{en:"Can I have a receipt? I'd like to return this.",fr:"Puis-je avoir un reçu? Je voudrais retourner ceci.",de:"Kann ich einen Beleg haben? Ich möchte das zurückgeben.",it:"Posso avere lo scontrino? Vorrei restituire questo.",ar:"هل يمكنني الحصول على إيصال؟ أريد إرجاع هذا."},
+]},
+
+{id:"restaurant",icon:"🍽️",title:{en:"At the Restaurant",ar:"في المطعم",fr:"Au restaurant",de:"Im Restaurant",it:"Al ristorante"},
+intro:{en:"Order food, ask for the menu, and pay the bill like a local.",ar:"اطلب الطعام واسأل عن القائمة وادفع الفاتورة كالمحلي.",fr:"Commandez, demandez le menu et payez l'addition comme un local.",de:"Essen bestellen, die Speisekarte erfragen und die Rechnung bezahlen wie ein Einheimischer.",it:"Ordina cibo, chiedi il menu e paga il conto come un locale."},
+vocab:[
+{e:"🪑",en:"A table for two please",fr:"Une table pour deux s'il vous plaît",de:"Einen Tisch für zwei bitte",it:"Un tavolo per due per favore",ar:"طاولة لشخصين من فضلك"},
+{e:"📋",en:"The menu please",fr:"Le menu s'il vous plaît",de:"Die Speisekarte bitte",it:"Il menu per favore",ar:"القائمة من فضلك"},
+{e:"🙋",en:"I'd like to order",fr:"Je voudrais commander",de:"Ich möchte bestellen",it:"Vorrei ordinare",ar:"أريد أن أطلب"},
+{e:"💧",en:"Still or sparkling water?",fr:"Eau plate ou gazeuse?",de:"Stilles oder Sprudelwasser?",it:"Acqua naturale o frizzante?",ar:"ماء عادي أم فوار؟"},
+{e:"🥩",en:"What do you recommend?",fr:"Qu'est-ce que vous recommandez?",de:"Was empfehlen Sie?",it:"Cosa consiglia?",ar:"ماذا توصي؟"},
+{e:"😋",en:"It's delicious",fr:"C'est délicieux",de:"Es ist lecker",it:"È delizioso",ar:"إنه لذيذ"},
+{e:"🧾",en:"The bill please",fr:"L'addition s'il vous plaît",de:"Die Rechnung bitte",it:"Il conto per favore",ar:"الحساب من فضلك"},
+{e:"🌱",en:"I'm vegetarian",fr:"Je suis végétarien(ne)",de:"Ich bin Vegetarier",it:"Sono vegetariano/a",ar:"أنا نباتي"},
+{e:"⚠️",en:"I'm allergic to...",fr:"Je suis allergique à...",de:"Ich bin allergisch gegen...",it:"Sono allergico/a a...",ar:"أنا حساس لـ..."},
+{e:"🌟",en:"Excellent service!",fr:"Excellent service!",de:"Ausgezeichneter Service!",it:"Servizio eccellente!",ar:"خدمة ممتازة!"},
+],
+ex:[
+{en:"A table for two please. The menu please.",fr:"Une table pour deux s'il vous plaît. Le menu s'il vous plaît.",de:"Einen Tisch für zwei bitte. Die Speisekarte bitte.",it:"Un tavolo per due per favore. Il menu per favore.",ar:"طاولة لشخصين من فضلك. القائمة من فضلك."},
+{en:"What do you recommend? It's delicious!",fr:"Qu'est-ce que vous recommandez? C'est délicieux!",de:"Was empfehlen Sie? Es ist lecker!",it:"Cosa consiglia? È delizioso!",ar:"ماذا توصي؟ إنه لذيذ!"},
+{en:"I'm vegetarian. The bill please.",fr:"Je suis végétarien. L'addition s'il vous plaît.",de:"Ich bin Vegetarier. Die Rechnung bitte.",it:"Sono vegetariano. Il conto per favore.",ar:"أنا نباتي. الحساب من فضلك."},
+]},
+
+{id:"directions",icon:"🗺️",title:{en:"Asking Directions",ar:"طلب الاتجاهات",fr:"Demander son chemin",de:"Nach dem Weg fragen",it:"Chiedere indicazioni"},
+intro:{en:"Navigate any city by learning how to ask and give directions.",ar:"تنقل في أي مدينة بتعلم طلب الاتجاهات وإعطائها.",fr:"Naviguez dans n'importe quelle ville en apprenant à demander et donner des directions.",de:"Navigiere durch jede Stadt, indem du lernst, Wegbeschreibungen zu fragen und zu geben.",it:"Orientati in qualsiasi città imparando a chiedere e dare indicazioni."},
+vocab:[
+{e:"🗺️",en:"Excuse me, where is...?",fr:"Excusez-moi, où est...?",de:"Entschuldigung, wo ist...?",it:"Scusi, dov'è...?",ar:"عفواً، أين...؟"},
+{e:"➡️",en:"Turn right",fr:"Tournez à droite",de:"Biegen Sie rechts ab",it:"Giri a destra",ar:"اتجه يميناً"},
+{e:"⬅️",en:"Turn left",fr:"Tournez à gauche",de:"Biegen Sie links ab",it:"Giri a sinistra",ar:"اتجه يساراً"},
+{e:"⬆️",en:"Go straight ahead",fr:"Allez tout droit",de:"Gehen Sie geradeaus",it:"Vada dritto",ar:"امشِ مباشرة"},
+{e:"🔄",en:"It's on your right",fr:"C'est à votre droite",de:"Es ist auf Ihrer rechten Seite",it:"È sulla sua destra",ar:"إنه على يمينك"},
+{e:"📍",en:"It's near here",fr:"C'est près d'ici",de:"Es ist in der Nähe",it:"È vicino qui",ar:"إنه قريب من هنا"},
+{e:"🚶",en:"How far is it?",fr:"C'est loin?",de:"Wie weit ist es?",it:"È lontano?",ar:"كم هي بعيدة؟"},
+{e:"🚌",en:"Take the bus",fr:"Prenez le bus",de:"Nehmen Sie den Bus",it:"Prenda l'autobus",ar:"خذ الحافلة"},
+{e:"🚇",en:"Take the metro",fr:"Prenez le métro",de:"Nehmen Sie die U-Bahn",it:"Prenda la metro",ar:"خذ المترو"},
+{e:"🏨",en:"Is there a hotel nearby?",fr:"Y a-t-il un hôtel près d'ici?",de:"Gibt es ein Hotel in der Nähe?",it:"C'è un hotel qui vicino?",ar:"هل يوجد فندق قريب؟"},
+],
+ex:[
+{en:"Excuse me, where is the station? Turn left then go straight.",fr:"Excusez-moi, où est la gare? Tournez à gauche puis allez tout droit.",de:"Entschuldigung, wo ist der Bahnhof? Biegen Sie links ab, dann geradeaus.",it:"Scusi, dov'è la stazione? Giri a sinistra poi vada dritto.",ar:"عفواً، أين المحطة؟ اتجه يساراً ثم امشِ مباشرة."},
+{en:"How far is it? It's near here, take the metro.",fr:"C'est loin? C'est près d'ici, prenez le métro.",de:"Wie weit ist es? Es ist in der Nähe, nehmen Sie die U-Bahn.",it:"È lontano? È vicino, prenda la metro.",ar:"كم هي بعيدة؟ إنها قريبة، خذ المترو."},
+{en:"Is there a hotel nearby? It's on your right.",fr:"Y a-t-il un hôtel près d'ici? C'est à votre droite.",de:"Gibt es ein Hotel in der Nähe? Es ist auf Ihrer rechten Seite.",it:"C'è un hotel qui vicino? È sulla sua destra.",ar:"هل يوجد فندق قريب؟ إنه على يمينك."},
+]},
+
+{id:"work",icon:"💼",title:{en:"Work Basics",ar:"أساسيات العمل",fr:"Bases du travail",de:"Grundlagen der Arbeit",it:"Basi del lavoro"},
+intro:{en:"Essential vocabulary for the workplace and professional settings.",ar:"المفردات الأساسية لمكان العمل والبيئات المهنية.",fr:"Vocabulaire essentiel pour le lieu de travail et les milieux professionnels.",de:"Wesentliches Vokabular für den Arbeitsplatz und berufliche Umgebungen.",it:"Vocabolario essenziale per il luogo di lavoro e contesti professionali."},
+vocab:[
+{e:"🏢",en:"Office",fr:"Bureau",de:"Büro",it:"Ufficio",ar:"مكتب"},
+{e:"👔",en:"Meeting",fr:"Réunion",de:"Besprechung",it:"Riunione",ar:"اجتماع"},
+{e:"📊",en:"Report",fr:"Rapport",de:"Bericht",it:"Rapporto",ar:"تقرير"},
+{e:"⏰",en:"Deadline",fr:"Date limite",de:"Deadline",it:"Scadenza",ar:"موعد نهائي"},
+{e:"📧",en:"Email",fr:"Email",de:"E-Mail",it:"Email",ar:"بريد إلكتروني"},
+{e:"📞",en:"Phone call",fr:"Appel téléphonique",de:"Telefonanruf",it:"Telefonata",ar:"مكالمة هاتفية"},
+{e:"🤝",en:"Colleague",fr:"Collègue",de:"Kollege",it:"Collega",ar:"زميل"},
+{e:"👩‍💼",en:"Manager",fr:"Responsable",de:"Vorgesetzte/r",it:"Responsabile",ar:"مدير"},
+{e:"💰",en:"Salary",fr:"Salaire",de:"Gehalt",it:"Stipendio",ar:"راتب"},
+{e:"🏖️",en:"Vacation",fr:"Vacances",de:"Urlaub",it:"Vacanza",ar:"إجازة"},
+],
+ex:[
+{en:"The meeting is at three o'clock in the office.",fr:"La réunion est à trois heures au bureau.",de:"Die Besprechung ist um drei Uhr im Büro.",it:"La riunione è alle tre in ufficio.",ar:"الاجتماع الساعة الثالثة في المكتب."},
+{en:"I need to send an email before the deadline.",fr:"Je dois envoyer un email avant la date limite.",de:"Ich muss eine E-Mail vor der Deadline senden.",it:"Devo inviare un'email prima della scadenza.",ar:"أحتاج إرسال بريد إلكتروني قبل الموعد النهائي."},
+{en:"My colleague is the new manager. His salary is good.",fr:"Mon collègue est le nouveau responsable. Son salaire est bon.",de:"Mein Kollege ist der neue Vorgesetzte. Sein Gehalt ist gut.",it:"Il mio collega è il nuovo responsabile. Il suo stipendio è buono.",ar:"زميلي هو المدير الجديد. راتبه جيد."},
+]},
+
+{id:"describing",icon:"🪞",title:{en:"Describing People",ar:"وصف الأشخاص",fr:"Décrire les personnes",de:"Personen beschreiben",it:"Descrivere le persone"},
+intro:{en:"Describe people's appearance and personality accurately.",ar:"صف مظهر الأشخاص وشخصيتهم بدقة.",fr:"Décrivez l'apparence et la personnalité des gens avec précision.",de:"Beschreibe das Aussehen und die Persönlichkeit von Menschen genau.",it:"Descrivi con precisione l'aspetto e la personalità delle persone."},
+vocab:[
+{e:"📏",en:"Tall",fr:"Grand(e)",de:"Groß",it:"Alto/a",ar:"طويل"},
+{e:"📐",en:"Short",fr:"Petit(e)",de:"Klein",it:"Basso/a",ar:"قصير"},
+{e:"💪",en:"Strong",fr:"Fort(e)",de:"Stark",it:"Forte",ar:"قوي"},
+{e:"😊",en:"Friendly",fr:"Sympa",de:"Freundlich",it:"Simpatico/a",ar:"ودود"},
+{e:"🧠",en:"Intelligent",fr:"Intelligent(e)",de:"Intelligent",it:"Intelligente",ar:"ذكي"},
+{e:"😴",en:"Shy",fr:"Timide",de:"Schüchtern",it:"Timido/a",ar:"خجول"},
+{e:"😂",en:"Funny",fr:"Drôle",de:"Lustig",it:"Divertente",ar:"مضحك"},
+{e:"🎨",en:"Creative",fr:"Créatif/ive",de:"Kreativ",it:"Creativo/a",ar:"مبدع"},
+{e:"👱",en:"Blond hair",fr:"Cheveux blonds",de:"Blonde Haare",it:"Capelli biondi",ar:"شعر أشقر"},
+{e:"👀",en:"Blue eyes",fr:"Yeux bleus",de:"Blaue Augen",it:"Occhi azzurri",ar:"عيون زرقاء"},
+],
+ex:[
+{en:"She is tall, friendly and very intelligent.",fr:"Elle est grande, sympa et très intelligente.",de:"Sie ist groß, freundlich und sehr intelligent.",it:"Lei è alta, simpatica e molto intelligente.",ar:"هي طويلة وودودة وذكية جداً."},
+{en:"He has blond hair and blue eyes. He is funny.",fr:"Il a les cheveux blonds et les yeux bleus. Il est drôle.",de:"Er hat blonde Haare und blaue Augen. Er ist lustig.",it:"Ha i capelli biondi e gli occhi azzurri. È divertente.",ar:"لديه شعر أشقر وعيون زرقاء. إنه مضحك."},
+{en:"My new colleague is creative but a bit shy.",fr:"Mon nouveau collègue est créatif mais un peu timide.",de:"Mein neuer Kollege ist kreativ, aber ein wenig schüchtern.",it:"Il mio nuovo collega è creativo ma un po' timido.",ar:"زميلي الجديد مبدع لكنه خجول بعض الشيء."},
+]},
+
+{id:"hobbies",icon:"🎸",title:{en:"Hobbies",ar:"الهوايات",fr:"Loisirs",de:"Hobbys",it:"Hobby"},
+intro:{en:"Talk about what you love to do in your free time.",ar:"تحدث عما تحب فعله في وقت فراغك.",fr:"Parlez de ce que vous aimez faire pendant votre temps libre.",de:"Sprich darüber, was du in deiner Freizeit liebst.",it:"Parla di ciò che ami fare nel tempo libero."},
+vocab:[
+{e:"📚",en:"Reading",fr:"Lire",de:"Lesen",it:"Leggere",ar:"القراءة"},
+{e:"🎵",en:"Listening to music",fr:"Écouter de la musique",de:"Musik hören",it:"Ascoltare musica",ar:"الاستماع للموسيقى"},
+{e:"⚽",en:"Playing football",fr:"Jouer au foot",de:"Fußball spielen",it:"Giocare a calcio",ar:"لعب كرة القدم"},
+{e:"🎨",en:"Painting",fr:"Peindre",de:"Malen",it:"Dipingere",ar:"الرسم"},
+{e:"🏃",en:"Running",fr:"Courir",de:"Laufen",it:"Correre",ar:"الجري"},
+{e:"✈️",en:"Travelling",fr:"Voyager",de:"Reisen",it:"Viaggiare",ar:"السفر"},
+{e:"🍳",en:"Cooking",fr:"Cuisiner",de:"Kochen",it:"Cucinare",ar:"الطبخ"},
+{e:"📸",en:"Photography",fr:"Photographie",de:"Fotografie",it:"Fotografia",ar:"التصوير"},
+{e:"🎮",en:"Video games",fr:"Jeux vidéo",de:"Videospiele",it:"Videogiochi",ar:"ألعاب الفيديو"},
+{e:"🧘",en:"Yoga",fr:"Yoga",de:"Yoga",it:"Yoga",ar:"اليوغا"},
+],
+ex:[
+{en:"I love reading and listening to music in the evening.",fr:"J'adore lire et écouter de la musique le soir.",de:"Ich liebe es, abends zu lesen und Musik zu hören.",it:"Amo leggere e ascoltare musica la sera.",ar:"أحب القراءة والاستماع للموسيقى في المساء."},
+{en:"Do you play football? No, I prefer running and yoga.",fr:"Tu joues au foot? Non, je préfère courir et faire du yoga.",de:"Spielst du Fußball? Nein, ich bevorzuge Laufen und Yoga.",it:"Giochi a calcio? No, preferisco correre e fare yoga.",ar:"هل تلعب كرة القدم؟ لا، أفضل الجري واليوغا."},
+{en:"My hobbies are cooking, photography and travelling.",fr:"Mes loisirs sont la cuisine, la photographie et les voyages.",de:"Meine Hobbys sind Kochen, Fotografie und Reisen.",it:"I miei hobby sono cucinare, la fotografia e viaggiare.",ar:"هواياتي هي الطبخ والتصوير والسفر."},
+]},
+
+{id:"past",icon:"⏮️",title:{en:"Past Tense",ar:"الزمن الماضي",fr:"Passé simple",de:"Vergangenheitsform",it:"Tempo passato"},
+intro:{en:"Talk about things that happened in the past.",ar:"تحدث عن الأشياء التي حدثت في الماضي.",fr:"Parlez de choses qui se sont passées dans le passé.",de:"Sprich über Dinge, die in der Vergangenheit passiert sind.",it:"Parla di cose accadute nel passato."},
+vocab:[
+{e:"📖",en:"I read (past)",fr:"J'ai lu",de:"Ich habe gelesen",it:"Ho letto",ar:"قرأت"},
+{e:"🚶",en:"I went",fr:"Je suis allé(e)",de:"Ich bin gegangen",it:"Sono andato/a",ar:"ذهبت"},
+{e:"🍽️",en:"I ate",fr:"J'ai mangé",de:"Ich habe gegessen",it:"Ho mangiato",ar:"أكلت"},
+{e:"💬",en:"I spoke",fr:"J'ai parlé",de:"Ich habe gesprochen",it:"Ho parlato",ar:"تحدثت"},
+{e:"👀",en:"I saw",fr:"J'ai vu",de:"Ich habe gesehen",it:"Ho visto",ar:"رأيت"},
+{e:"🤝",en:"I met",fr:"J'ai rencontré",de:"Ich habe getroffen",it:"Ho incontrato",ar:"التقيت"},
+{e:"🛍️",en:"I bought",fr:"J'ai acheté",de:"Ich habe gekauft",it:"Ho comprato",ar:"اشتريت"},
+{e:"✍️",en:"I wrote",fr:"J'ai écrit",de:"Ich habe geschrieben",it:"Ho scritto",ar:"كتبت"},
+{e:"🏃",en:"I ran",fr:"J'ai couru",de:"Ich bin gelaufen",it:"Ho corso",ar:"ركضت"},
+{e:"😴",en:"I slept",fr:"J'ai dormi",de:"Ich habe geschlafen",it:"Ho dormito",ar:"نمت"},
+],
+ex:[
+{en:"Yesterday I went to the market and I bought vegetables.",fr:"Hier je suis allé au marché et j'ai acheté des légumes.",de:"Gestern bin ich auf den Markt gegangen und habe Gemüse gekauft.",it:"Ieri sono andato al mercato e ho comprato verdure.",ar:"أمس ذهبت إلى السوق واشتريت خضروات."},
+{en:"I met my colleague and we spoke for an hour.",fr:"J'ai rencontré mon collègue et nous avons parlé une heure.",de:"Ich habe meinen Kollegen getroffen und wir haben eine Stunde gesprochen.",it:"Ho incontrato il mio collega e abbiamo parlato per un'ora.",ar:"التقيت بزميلي وتحدثنا لمدة ساعة."},
+{en:"I ate, wrote a report, and slept early.",fr:"J'ai mangé, écrit un rapport et dormi tôt.",de:"Ich habe gegessen, einen Bericht geschrieben und früh geschlafen.",it:"Ho mangiato, scritto un rapporto e dormito presto.",ar:"أكلت وكتبت تقريراً ونمت مبكراً."},
+]},
+]}, // end A2
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   B1 — INTERMEDIATE  (4 topics)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+B1:{col:"#7C3AED",grad:"linear-gradient(135deg,#5B21B6,#7C3AED)",title:{en:"Intermediate",ar:"متوسط",fr:"Intermédiaire",de:"Mittelstufe",it:"Intermedio"},
+topics:[
+{id:"travel",icon:"✈️",title:{en:"Travel Conversations",ar:"محادثات السفر",fr:"Conversations de voyage",de:"Reisegespräche",it:"Conversazioni di viaggio"},
+intro:{en:"Everything you need to travel confidently.",ar:"كل ما تحتاجه للسفر بثقة.",fr:"Tout ce dont vous avez besoin pour voyager en confiance.",de:"Alles, was du brauchst, um sicher zu reisen.",it:"Tutto quello di cui hai bisogno per viaggiare con sicurezza."},
+vocab:[
+{e:"🛂",en:"Passport control",fr:"Contrôle des passeports",de:"Passkontrolle",it:"Controllo passaporti",ar:"مراقبة جوازات السفر"},
+{e:"🧳",en:"Luggage",fr:"Bagages",de:"Gepäck",it:"Bagagli",ar:"الأمتعة"},
+{e:"🏨",en:"Hotel reservation",fr:"Réservation d'hôtel",de:"Hotelreservierung",it:"Prenotazione hotel",ar:"حجز فندق"},
+{e:"🗓️",en:"Check-in",fr:"Enregistrement",de:"Check-in",it:"Check-in",ar:"تسجيل الوصول"},
+{e:"🗓️",en:"Check-out",fr:"Départ",de:"Check-out",it:"Check-out",ar:"تسجيل المغادرة"},
+{e:"🚕",en:"Can you call a taxi?",fr:"Pouvez-vous appeler un taxi?",de:"Können Sie ein Taxi rufen?",it:"Può chiamare un taxi?",ar:"هل يمكنك استدعاء سيارة أجرة؟"},
+{e:"💱",en:"Currency exchange",fr:"Change de devises",de:"Geldwechsel",it:"Cambio valuta",ar:"صرف العملات"},
+{e:"🗺️",en:"Tourist map",fr:"Plan touristique",de:"Touristenkarte",it:"Mappa turistica",ar:"خريطة سياحية"},
+{e:"⚕️",en:"I need a doctor",fr:"J'ai besoin d'un médecin",de:"Ich brauche einen Arzt",it:"Ho bisogno di un medico",ar:"أحتاج طبيباً"},
+{e:"🆘",en:"Lost and found",fr:"Objets trouvés",de:"Fundbüro",it:"Oggetti smarriti",ar:"مكتب المفقودات"},
+],
+ex:[
+{en:"My hotel reservation is for three nights. Check-in at noon.",fr:"Ma réservation d'hôtel est pour trois nuits. Enregistrement à midi.",de:"Meine Hotelreservierung ist für drei Nächte. Check-in um Mittag.",it:"La mia prenotazione hotel è per tre notti. Check-in a mezzogiorno.",ar:"حجز الفندق لثلاث ليالٍ. تسجيل الوصول عند الظهر."},
+{en:"Can you call a taxi? I need to get to passport control.",fr:"Pouvez-vous appeler un taxi? Je dois aller au contrôle des passeports.",de:"Können Sie ein Taxi rufen? Ich muss zur Passkontrolle.",it:"Può chiamare un taxi? Devo andare al controllo passaporti.",ar:"هل يمكنك استدعاء سيارة أجرة؟ أحتاج الذهاب لمراقبة الجوازات."},
+{en:"I lost my luggage. Where is lost and found?",fr:"J'ai perdu mes bagages. Où sont les objets trouvés?",de:"Ich habe mein Gepäck verloren. Wo ist das Fundbüro?",it:"Ho perso i miei bagagli. Dov'è l'ufficio oggetti smarriti?",ar:"فقدت أمتعتي. أين مكتب المفقودات؟"},
+]},
+
+{id:"opinions",icon:"💭",title:{en:"Expressing Opinions",ar:"التعبير عن الآراء",fr:"Exprimer des opinions",de:"Meinungen ausdrücken",it:"Esprimere opinioni"},
+intro:{en:"Express your thoughts, agree, disagree and debate politely.",ar:"عبّر عن أفكارك وافق وخالف وناقش بأدب.",fr:"Exprimez vos pensées, approuvez, désapprouvez et débattez poliment.",de:"Drücke deine Gedanken aus, stimme zu, lehne ab und diskutiere höflich.",it:"Esprimi i tuoi pensieri, approva, disapprova e dibatti educatamente."},
+vocab:[
+{e:"💭",en:"In my opinion...",fr:"À mon avis...",de:"Meiner Meinung nach...",it:"A mio parere...",ar:"في رأيي..."},
+{e:"✅",en:"I agree with you",fr:"Je suis d'accord avec vous",de:"Ich stimme Ihnen zu",it:"Sono d'accordo con lei",ar:"أوافقك الرأي"},
+{e:"❌",en:"I disagree",fr:"Je ne suis pas d'accord",de:"Ich bin nicht einverstanden",it:"Non sono d'accordo",ar:"لا أوافق"},
+{e:"🤔",en:"I think that...",fr:"Je pense que...",de:"Ich denke, dass...",it:"Penso che...",ar:"أعتقد أن..."},
+{e:"🎯",en:"That's a good point",fr:"C'est un bon point",de:"Das ist ein guter Punkt",it:"È un buon punto",ar:"هذه نقطة جيدة"},
+{e:"🔄",en:"On the other hand...",fr:"D'un autre côté...",de:"Andererseits...",it:"D'altra parte...",ar:"من ناحية أخرى..."},
+{e:"💡",en:"In my experience...",fr:"D'après mon expérience...",de:"Meiner Erfahrung nach...",it:"Secondo la mia esperienza...",ar:"من تجربتي..."},
+{e:"🎙️",en:"Could you explain?",fr:"Pouvez-vous expliquer?",de:"Könnten Sie erklären?",it:"Potrebbe spiegare?",ar:"هل يمكنك الشرح؟"},
+{e:"📊",en:"According to...",fr:"Selon...",de:"Laut...",it:"Secondo...",ar:"وفقاً لـ..."},
+{e:"⚖️",en:"It depends on...",fr:"Ça dépend de...",de:"Es hängt ab von...",it:"Dipende da...",ar:"يعتمد على..."},
+],
+ex:[
+{en:"In my opinion, technology improves our lives. I agree with you.",fr:"À mon avis, la technologie améliore nos vies. Je suis d'accord avec vous.",de:"Meiner Meinung nach verbessert Technologie unser Leben. Ich stimme Ihnen zu.",it:"A mio parere, la tecnologia migliora le nostre vite. Sono d'accordo con lei.",ar:"في رأيي، التكنولوجيا تحسن حياتنا. أوافقك الرأي."},
+{en:"I disagree. On the other hand, it creates problems.",fr:"Je ne suis pas d'accord. D'un autre côté, ça crée des problèmes.",de:"Ich bin nicht einverstanden. Andererseits schafft es Probleme.",it:"Non sono d'accordo. D'altra parte, crea problemi.",ar:"لا أوافق. من ناحية أخرى، إنها تخلق مشاكل."},
+{en:"That's a good point. Could you explain more?",fr:"C'est un bon point. Pouvez-vous expliquer davantage?",de:"Das ist ein guter Punkt. Könnten Sie mehr erklären?",it:"È un buon punto. Potrebbe spiegare di più?",ar:"هذه نقطة جيدة. هل يمكنك الشرح أكثر؟"},
+]},
+
+{id:"stories",icon:"📖",title:{en:"Storytelling",ar:"رواية القصص",fr:"Raconter des histoires",de:"Geschichten erzählen",it:"Raccontare storie"},
+intro:{en:"Connect events, tell stories and keep your audience engaged.",ar:"اربط الأحداث وروِ القصص واجعل جمهورك منتبهاً.",fr:"Reliez les événements, racontez des histoires et maintenez l'attention.",de:"Verbinde Ereignisse, erzähle Geschichten und halte dein Publikum bei der Stange.",it:"Collega gli eventi, racconta storie e mantieni l'attenzione del tuo pubblico."},
+vocab:[
+{e:"📅",en:"First of all...",fr:"Tout d'abord...",de:"Zuerst...",it:"Prima di tutto...",ar:"أولاً..."},
+{e:"➡️",en:"Then...",fr:"Ensuite...",de:"Dann...",it:"Poi...",ar:"ثم..."},
+{e:"⏭️",en:"After that...",fr:"Après ça...",de:"Danach...",it:"Dopo di ciò...",ar:"بعد ذلك..."},
+{e:"🔚",en:"Finally...",fr:"Finalement...",de:"Schließlich...",it:"Infine...",ar:"أخيراً..."},
+{e:"😲",en:"Suddenly...",fr:"Soudainement...",de:"Plötzlich...",it:"All'improvviso...",ar:"فجأة..."},
+{e:"🔙",en:"Meanwhile...",fr:"Pendant ce temps...",de:"Inzwischen...",it:"Nel frattempo...",ar:"في هذه الأثناء..."},
+{e:"😕",en:"Unfortunately...",fr:"Malheureusement...",de:"Leider...",it:"Purtroppo...",ar:"لسوء الحظ..."},
+{e:"🎉",en:"Fortunately...",fr:"Heureusement...",de:"Glücklicherweise...",it:"Fortunatamente...",ar:"لحسن الحظ..."},
+{e:"🔚",en:"In the end...",fr:"À la fin...",de:"Am Ende...",it:"Alla fine...",ar:"في النهاية..."},
+{e:"🏆",en:"As a result...",fr:"En conséquence...",de:"Als Ergebnis...",it:"Di conseguenza...",ar:"ونتيجة لذلك..."},
+],
+ex:[
+{en:"First of all I woke up late. Then I missed the bus.",fr:"Tout d'abord je me suis réveillé tard. Ensuite j'ai raté le bus.",de:"Zuerst bin ich spät aufgewacht. Dann habe ich den Bus verpasst.",it:"Prima di tutto mi sono svegliato tardi. Poi ho perso l'autobus.",ar:"أولاً استيقظت متأخراً. ثم فاتني الحافلة."},
+{en:"Suddenly, it started raining. Fortunately, I had an umbrella.",fr:"Soudainement, il a commencé à pleuvoir. Heureusement, j'avais un parapluie.",de:"Plötzlich begann es zu regnen. Glücklicherweise hatte ich einen Regenschirm.",it:"All'improvviso ha iniziato a piovere. Fortunatamente avevo un ombrello.",ar:"فجأة بدأ المطر. لحسن الحظ كان معي مظلة."},
+{en:"In the end, everything was fine. As a result, I was happy.",fr:"À la fin, tout allait bien. En conséquence, j'étais heureux.",de:"Am Ende war alles gut. Als Ergebnis war ich glücklich.",it:"Alla fine, tutto andava bene. Di conseguenza, ero felice.",ar:"في النهاية، كل شيء كان بخير. ونتيجة لذلك، كنت سعيداً."},
+]},
+
+{id:"real_life",icon:"🌆",title:{en:"Real-life Situations",ar:"مواقف من الحياة الحقيقية",fr:"Situations réelles",de:"Reale Situationen",it:"Situazioni reali"},
+intro:{en:"Handle real-world situations: doctor, bank, post office, and more.",ar:"تعامل مع مواقف العالم الحقيقي: الطبيب والبنك ومكتب البريد وأكثر.",fr:"Gérez des situations réelles: médecin, banque, poste et plus.",de:"Bewältige reale Situationen: Arzt, Bank, Post und mehr.",it:"Gestisci situazioni reali: medico, banca, ufficio postale e altro."},
+vocab:[
+{e:"⚕️",en:"I have a headache",fr:"J'ai mal à la tête",de:"Ich habe Kopfschmerzen",it:"Ho mal di testa",ar:"عندي صداع"},
+{e:"💊",en:"I need a prescription",fr:"J'ai besoin d'une ordonnance",de:"Ich brauche ein Rezept",it:"Ho bisogno di una ricetta",ar:"أحتاج وصفة طبية"},
+{e:"🏦",en:"I'd like to open an account",fr:"Je voudrais ouvrir un compte",de:"Ich möchte ein Konto eröffnen",it:"Vorrei aprire un conto",ar:"أريد فتح حساب"},
+{e:"💳",en:"My card is not working",fr:"Ma carte ne fonctionne pas",de:"Meine Karte funktioniert nicht",it:"La mia carta non funziona",ar:"بطاقتي لا تعمل"},
+{e:"📮",en:"I want to send a package",fr:"Je veux envoyer un colis",de:"Ich möchte ein Paket senden",it:"Voglio inviare un pacco",ar:"أريد إرسال طرد"},
+{e:"🏛️",en:"Municipal office",fr:"Mairie",de:"Gemeindeamt",it:"Comune",ar:"بلدية"},
+{e:"🔌",en:"The electricity is out",fr:"Il n'y a plus d'électricité",de:"Der Strom ist ausgefallen",it:"Manca la corrente",ar:"انقطعت الكهرباء"},
+{e:"🔧",en:"I need a plumber",fr:"J'ai besoin d'un plombier",de:"Ich brauche einen Klempner",it:"Ho bisogno di un idraulico",ar:"أحتاج سباكاً"},
+{e:"🚔",en:"I need to report a theft",fr:"Je dois signaler un vol",de:"Ich muss einen Diebstahl melden",it:"Devo denunciare un furto",ar:"أحتاج الإبلاغ عن سرقة"},
+{e:"📋",en:"I need to fill in a form",fr:"Je dois remplir un formulaire",de:"Ich muss ein Formular ausfüllen",it:"Devo compilare un modulo",ar:"أحتاج ملء استمارة"},
+],
+ex:[
+{en:"I have a headache and I need a prescription from the doctor.",fr:"J'ai mal à la tête et j'ai besoin d'une ordonnance du médecin.",de:"Ich habe Kopfschmerzen und brauche ein Rezept vom Arzt.",it:"Ho mal di testa e ho bisogno di una ricetta dal medico.",ar:"عندي صداع وأحتاج وصفة طبية من الطبيب."},
+{en:"My card is not working. I'd like to open an account.",fr:"Ma carte ne fonctionne pas. Je voudrais ouvrir un compte.",de:"Meine Karte funktioniert nicht. Ich möchte ein Konto eröffnen.",it:"La mia carta non funziona. Vorrei aprire un conto.",ar:"بطاقتي لا تعمل. أريد فتح حساب."},
+{en:"I need to report a theft and fill in a form at the municipal office.",fr:"Je dois signaler un vol et remplir un formulaire à la mairie.",de:"Ich muss einen Diebstahl melden und ein Formular im Gemeindeamt ausfüllen.",it:"Devo denunciare un furto e compilare un modulo al comune.",ar:"أحتاج الإبلاغ عن سرقة وملء استمارة في البلدية."},
+]},
+]}, // end B1
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   B2 — UPPER INTERMEDIATE  (3 topics)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+B2:{col:"#D97706",grad:"linear-gradient(135deg,#B45309,#D97706)",title:{en:"Upper Intermediate",ar:"متوسط متقدم",fr:"Intermédiaire supérieur",de:"Obere Mittelstufe",it:"Intermedio superiore"},
+topics:[
+{id:"complex",icon:"🧩",title:{en:"Complex Grammar",ar:"القواعد المعقدة",fr:"Grammaire complexe",de:"Komplexe Grammatik",it:"Grammatica complessa"},
+intro:{en:"Master complex grammar structures for fluent expression.",ar:"أتقن هياكل القواعد المعقدة للتعبير الطليق.",fr:"Maîtrisez les structures grammaticales complexes pour une expression fluide.",de:"Beherrsche komplexe Grammatikstrukturen für fließenden Ausdruck.",it:"Padroneggia strutture grammaticali complesse per un'espressione fluente."},
+vocab:[
+{e:"🔀",en:"Although...",fr:"Bien que...",de:"Obwohl...",it:"Sebbene...",ar:"على الرغم من أن..."},
+{e:"🔗",en:"In spite of...",fr:"Malgré...",de:"Trotz...",it:"Nonostante...",ar:"بالرغم من..."},
+{e:"⬆️",en:"Unless...",fr:"À moins que...",de:"Es sei denn...",it:"A meno che...",ar:"ما لم..."},
+{e:"🎯",en:"Provided that...",fr:"À condition que...",de:"Vorausgesetzt, dass...",it:"A condizione che...",ar:"بشرط أن..."},
+{e:"🔄",en:"Whereas...",fr:"Tandis que...",de:"Wohingegen...",it:"Mentre...",ar:"في حين أن..."},
+{e:"📌",en:"It is said that...",fr:"On dit que...",de:"Es wird gesagt, dass...",it:"Si dice che...",ar:"يُقال إن..."},
+{e:"📝",en:"Having said that...",fr:"Cela dit...",de:"Wenn ich das gesagt habe...",it:"Detto questo...",ar:"مع ذلك..."},
+{e:"🌀",en:"Not only... but also...",fr:"Non seulement... mais aussi...",de:"Nicht nur... sondern auch...",it:"Non solo... ma anche...",ar:"ليس فقط... بل أيضاً..."},
+{e:"⏳",en:"By the time...",fr:"Au moment où...",de:"Wenn erst einmal...",it:"Nel momento in cui...",ar:"بحلول الوقت الذي..."},
+{e:"🔒",en:"So that...",fr:"Afin que...",de:"Damit...",it:"Affinché...",ar:"حتى أن..."},
+],
+ex:[
+{en:"Although it was raining, we went out. Not only that, but we had fun.",fr:"Bien qu'il pleuvait, nous sommes sortis. Non seulement ça, mais nous nous sommes amusés.",de:"Obwohl es regnete, gingen wir raus. Nicht nur das, sondern wir haben auch Spaß gehabt.",it:"Sebbene piovesse, siamo usciti. Non solo questo, ma ci siamo anche divertiti.",ar:"على الرغم من المطر، خرجنا. ليس فقط ذلك، بل استمتعنا أيضاً."},
+{en:"Unless you study, you won't pass. Provided that you practice daily.",fr:"À moins que tu étudies, tu ne réussiras pas. À condition que tu pratiques quotidiennement.",de:"Es sei denn, du lernst, wirst du nicht bestehen. Vorausgesetzt, du übst täglich.",it:"A meno che tu non studi, non passerai. A condizione che tu pratichi quotidianamente.",ar:"ما لم تدرس، لن تنجح. بشرط أن تتدرب يومياً."},
+{en:"It is said that practice makes perfect. Having said that, talent helps.",fr:"On dit que c'est en forgeant qu'on devient forgeron. Cela dit, le talent aide.",de:"Es wird gesagt, dass Übung den Meister macht. Wenn ich das gesagt habe, hilft Talent.",it:"Si dice che la pratica rende perfetti. Detto questo, il talento aiuta.",ar:"يُقال إن الممارسة تصنع الكمال. مع ذلك، الموهبة تساعد."},
+]},
+{id:"debates",icon:"🎙️",title:{en:"Debates",ar:"النقاشات",fr:"Débats",de:"Debatten",it:"Dibattiti"},
+intro:{en:"Argue effectively, defend your position and challenge others respectfully.",ar:"ناقش بفعالية، دافع عن موقفك وتحدَّ الآخرين باحترام.",fr:"Argumentez efficacement, défendez votre position et défiez les autres respectueusement.",de:"Argumentiere effektiv, verteidige deine Position und fordere andere respektvoll heraus.",it:"Argomenta efficacemente, difendi la tua posizione e sfida gli altri rispettosamente."},
+vocab:[
+{e:"🎯",en:"My argument is...",fr:"Mon argument est...",de:"Mein Argument ist...",it:"Il mio argomento è...",ar:"حجتي هي..."},
+{e:"📊",en:"The data shows...",fr:"Les données montrent...",de:"Die Daten zeigen...",it:"I dati mostrano...",ar:"البيانات تُظهر..."},
+{e:"❌",en:"That is not accurate",fr:"Ce n'est pas exact",de:"Das ist nicht korrekt",it:"Non è accurato",ar:"هذا غير دقيق"},
+{e:"🔍",en:"Let me clarify...",fr:"Permettez-moi de clarifier...",de:"Lassen Sie mich klären...",it:"Permettetemi di chiarire...",ar:"دعني أوضح..."},
+{e:"💡",en:"Consider this...",fr:"Considérez ceci...",de:"Bedenken Sie dies...",it:"Considerate questo...",ar:"فكر في هذا..."},
+{e:"🔄",en:"To counter that...",fr:"Pour contrer cela...",de:"Um dem entgegenzuwirken...",it:"Per contrastare ciò...",ar:"للرد على ذلك..."},
+{e:"⚖️",en:"Weighing both sides...",fr:"En pesant les deux côtés...",de:"Beide Seiten abwägend...",it:"Soppesando entrambi i lati...",ar:"بالموازنة بين الجانبين..."},
+{e:"🎙️",en:"To summarize...",fr:"Pour résumer...",de:"Um zusammenzufassen...",it:"Per riassumere...",ar:"للتلخيص..."},
+{e:"🤝",en:"I acknowledge that...",fr:"Je reconnais que...",de:"Ich erkenne an, dass...",it:"Riconosco che...",ar:"أعترف بأن..."},
+{e:"🏆",en:"The key point is...",fr:"Le point clé est...",de:"Der Kernpunkt ist...",it:"Il punto chiave è...",ar:"النقطة الرئيسية هي..."},
+],
+ex:[
+{en:"My argument is clear. The data shows a 30% improvement.",fr:"Mon argument est clair. Les données montrent une amélioration de 30%.",de:"Mein Argument ist klar. Die Daten zeigen eine Verbesserung von 30%.",it:"Il mio argomento è chiaro. I dati mostrano un miglioramento del 30%.",ar:"حجتي واضحة. البيانات تُظهر تحسناً بنسبة 30%."},
+{en:"That is not accurate. Let me clarify with evidence.",fr:"Ce n'est pas exact. Permettez-moi de clarifier avec des preuves.",de:"Das ist nicht korrekt. Lassen Sie mich mit Beweisen klären.",it:"Non è accurato. Permettetemi di chiarire con prove.",ar:"هذا غير دقيق. دعني أوضح بالأدلة."},
+{en:"Weighing both sides, the key point is balance and cooperation.",fr:"En pesant les deux côtés, le point clé est l'équilibre et la coopération.",de:"Beide Seiten abwägend ist der Kernpunkt Balance und Kooperation.",it:"Soppesando entrambi i lati, il punto chiave è equilibrio e cooperazione.",ar:"بالموازنة بين الجانبين، النقطة الرئيسية هي التوازن والتعاون."},
+]},
+{id:"formal",icon:"🎩",title:{en:"Formal vs Informal",ar:"الرسمي مقابل غير الرسمي",fr:"Formel vs Informel",de:"Formell vs Informell",it:"Formale vs Informale"},
+intro:{en:"Know when to use formal or informal language in different contexts.",ar:"اعرف متى تستخدم اللغة الرسمية أو غير الرسمية في سياقات مختلفة.",fr:"Sachez quand utiliser un langage formel ou informel selon les contextes.",de:"Wisse, wann du formelle oder informelle Sprache in verschiedenen Kontexten verwendest.",it:"Sapere quando usare il linguaggio formale o informale in diversi contesti."},
+vocab:[
+{e:"🎩",en:"With respect to...",fr:"En ce qui concerne...",de:"In Bezug auf...",it:"Per quanto riguarda...",ar:"فيما يتعلق بـ..."},
+{e:"📝",en:"Dear Sir/Madam",fr:"Monsieur/Madame",de:"Sehr geehrte/r",it:"Gentile Signore/Signora",ar:"حضرة السيد/السيدة"},
+{e:"📧",en:"I am writing to...",fr:"Je vous écris pour...",de:"Ich schreibe Ihnen, um...",it:"Le scrivo per...",ar:"أكتب إليك بخصوص..."},
+{e:"👋",en:"Hey! / Hi!",fr:"Salut! / Coucou!",de:"Hey! / Hi!",it:"Ciao!",ar:"هيا! / أهلاً!"},
+{e:"😊",en:"What's up?",fr:"Ça va?",de:"Was geht?",it:"Come butta?",ar:"ما الأخبار؟"},
+{e:"📞",en:"Catch you later",fr:"À plus",de:"Bis später",it:"A dopo",ar:"إلى اللقاء"},
+{e:"🤝",en:"I would appreciate it if...",fr:"Je vous serais reconnaissant(e) si...",de:"Ich würde es begrüßen, wenn...",it:"Le sarei grato/a se...",ar:"سأكون ممتناً إذا..."},
+{e:"✉️",en:"Please find attached...",fr:"Veuillez trouver ci-joint...",de:"Anbei finden Sie...",it:"In allegato troverà...",ar:"يرجى إيجاد المرفق..."},
+{e:"🚪",en:"Yours sincerely",fr:"Cordialement",de:"Mit freundlichen Grüßen",it:"Cordiali saluti",ar:"مع خالص التقدير"},
+{e:"💬",en:"Just to let you know...",fr:"Pour vous informer...",de:"Nur damit Sie wissen...",it:"Solo per farti sapere...",ar:"فقط لأعلمك..."},
+],
+ex:[
+{en:"Dear Sir/Madam, I am writing to inquire about the position.",fr:"Monsieur, je vous écris pour me renseigner sur le poste.",de:"Sehr geehrte Damen und Herren, ich schreibe Ihnen bezüglich der Stelle.",it:"Gentile Signore, Le scrivo per informarmi sulla posizione.",ar:"حضرة السيد، أكتب إليك بخصوص الوظيفة."},
+{en:"Please find attached my CV. Yours sincerely.",fr:"Veuillez trouver ci-joint mon CV. Cordialement.",de:"Anbei finden Sie meinen Lebenslauf. Mit freundlichen Grüßen.",it:"In allegato troverà il mio CV. Cordiali saluti.",ar:"يرجى إيجاد سيرتي الذاتية المرفقة. مع خالص التقدير."},
+{en:"Hey! What's up? Just to let you know, I'll be late.",fr:"Salut! Ça va? Pour te dire que je serai en retard.",de:"Hey! Was geht? Nur damit du weißt, ich komme spät.",it:"Ciao! Come butta? Solo per farti sapere, sarò in ritardo.",ar:"أهلاً! ما الأخبار؟ فقط لأعلمك، سأتأخر."},
+]},
+]}, // end B2
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   C1 — ADVANCED  (2 topics)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+C1:{col:"#DC2626",grad:"linear-gradient(135deg,#B91C1C,#DC2626)",title:{en:"Advanced",ar:"متقدم",fr:"Avancé",de:"Fortgeschritten",it:"Avanzato"},
+topics:[
+{id:"adv_topics",icon:"🧬",title:{en:"Advanced Topics",ar:"مواضيع متقدمة",fr:"Sujets avancés",de:"Fortgeschrittene Themen",it:"Argomenti avanzati"},
+intro:{en:"Discuss complex topics like society, technology and environment.",ar:"ناقش مواضيع معقدة كالمجتمع والتكنولوجيا والبيئة.",fr:"Discutez de sujets complexes comme la société, la technologie et l'environnement.",de:"Diskutiere komplexe Themen wie Gesellschaft, Technologie und Umwelt.",it:"Discuti argomenti complessi come società, tecnologia e ambiente."},
+vocab:[
+{e:"🌍",en:"Climate change",fr:"Changement climatique",de:"Klimawandel",it:"Cambiamento climatico",ar:"تغير المناخ"},
+{e:"🤖",en:"Artificial intelligence",fr:"Intelligence artificielle",de:"Künstliche Intelligenz",it:"Intelligenza artificiale",ar:"الذكاء الاصطناعي"},
+{e:"⚖️",en:"Social inequality",fr:"Inégalité sociale",de:"Soziale Ungleichheit",it:"Disuguaglianza sociale",ar:"عدم المساواة الاجتماعية"},
+{e:"🏛️",en:"Democracy",fr:"Démocratie",de:"Demokratie",it:"Democrazia",ar:"الديمقراطية"},
+{e:"💡",en:"Innovation",fr:"Innovation",de:"Innovation",it:"Innovazione",ar:"الابتكار"},
+{e:"🌐",en:"Globalization",fr:"Mondialisation",de:"Globalisierung",it:"Globalizzazione",ar:"العولمة"},
+{e:"📰",en:"Media influence",fr:"Influence des médias",de:"Medieneinfluss",it:"Influenza dei media",ar:"تأثير وسائل الإعلام"},
+{e:"🎓",en:"Higher education",fr:"Enseignement supérieur",de:"Hochschulbildung",it:"Istruzione superiore",ar:"التعليم العالي"},
+{e:"💊",en:"Healthcare system",fr:"Système de santé",de:"Gesundheitssystem",it:"Sistema sanitario",ar:"نظام الرعاية الصحية"},
+{e:"🏗️",en:"Urban development",fr:"Développement urbain",de:"Stadtentwicklung",it:"Sviluppo urbano",ar:"التطور العمراني"},
+],
+ex:[
+{en:"Climate change and globalization are the defining challenges of our era.",fr:"Le changement climatique et la mondialisation sont les défis déterminants de notre époque.",de:"Klimawandel und Globalisierung sind die prägenden Herausforderungen unserer Zeit.",it:"Il cambiamento climatico e la globalizzazione sono le sfide determinanti della nostra epoca.",ar:"تغير المناخ والعولمة هما التحديات المحورية في عصرنا."},
+{en:"Artificial intelligence is transforming healthcare systems and urban development.",fr:"L'intelligence artificielle transforme les systèmes de santé et le développement urbain.",de:"Künstliche Intelligenz verändert Gesundheitssysteme und Stadtentwicklung.",it:"L'intelligenza artificiale sta trasformando i sistemi sanitari e lo sviluppo urbano.",ar:"يحوّل الذكاء الاصطناعي أنظمة الرعاية الصحية والتطور العمراني."},
+{en:"Democracy requires free media and quality higher education for all citizens.",fr:"La démocratie requiert des médias libres et une éducation supérieure de qualité pour tous.",de:"Demokratie erfordert freie Medien und qualitativ hochwertige Hochschulbildung für alle.",it:"La democrazia richiede media liberi e istruzione superiore di qualità per tutti.",ar:"الديمقراطية تتطلب إعلاماً حراً وتعليماً عالياً جيداً للجميع."},
+]},
+{id:"discussions",icon:"🎙️",title:{en:"Academic Discussions",ar:"النقاشات الأكاديمية",fr:"Discussions académiques",de:"Akademische Diskussionen",it:"Discussioni accademiche"},
+intro:{en:"Engage in high-level academic discussions with precision and depth.",ar:"شارك في نقاشات أكاديمية رفيعة المستوى بدقة وعمق.",fr:"Participez à des discussions académiques de haut niveau avec précision et profondeur.",de:"Beteiligte dich an akademischen Diskussionen auf hohem Niveau.",it:"Partecipa a discussioni accademiche di alto livello con precisione e profondità."},
+vocab:[
+{e:"📚",en:"From an academic perspective...",fr:"D'un point de vue académique...",de:"Aus akademischer Sicht...",it:"Da una prospettiva accademica...",ar:"من منظور أكاديمي..."},
+{e:"🔬",en:"Research suggests that...",fr:"Les recherches suggèrent que...",de:"Forschungen legen nahe, dass...",it:"La ricerca suggerisce che...",ar:"تشير الأبحاث إلى أن..."},
+{e:"📊",en:"Empirical evidence shows...",fr:"Les preuves empiriques montrent...",de:"Empirische Belege zeigen...",it:"Le prove empiriche mostrano...",ar:"الأدلة التجريبية تُظهر..."},
+{e:"🔍",en:"This raises the question of...",fr:"Cela soulève la question de...",de:"Das wirft die Frage auf...",it:"Questo solleva la questione di...",ar:"هذا يطرح تساؤلاً حول..."},
+{e:"💡",en:"It can be argued that...",fr:"On peut soutenir que...",de:"Es lässt sich argumentieren, dass...",it:"Si può sostenere che...",ar:"يمكن القول إن..."},
+{e:"⚖️",en:"The implications are...",fr:"Les implications sont...",de:"Die Implikationen sind...",it:"Le implicazioni sono...",ar:"الآثار المترتبة هي..."},
+{e:"🎯",en:"To evaluate this critically...",fr:"Pour évaluer cela de façon critique...",de:"Um dies kritisch zu bewerten...",it:"Per valutare questo criticamente...",ar:"لتقييم ذلك نقدياً..."},
+{e:"🌀",en:"A nuanced approach would...",fr:"Une approche nuancée permettrait...",de:"Ein nuancierter Ansatz würde...",it:"Un approccio sfumato permetterebbe...",ar:"نهج دقيق سيسمح بـ..."},
+{e:"📌",en:"The consensus is that...",fr:"Le consensus est que...",de:"Der Konsens ist, dass...",it:"Il consenso è che...",ar:"الإجماع هو أن..."},
+{e:"🏆",en:"In conclusion...",fr:"En conclusion...",de:"Abschließend...",it:"In conclusione...",ar:"في الختام..."},
+],
+ex:[
+{en:"From an academic perspective, research suggests a direct correlation.",fr:"D'un point de vue académique, les recherches suggèrent une corrélation directe.",de:"Aus akademischer Sicht legen Forschungen eine direkte Korrelation nahe.",it:"Da una prospettiva accademica, la ricerca suggerisce una correlazione diretta.",ar:"من منظور أكاديمي، تشير الأبحاث إلى ارتباط مباشر."},
+{en:"This raises the question of ethics. The implications are significant.",fr:"Cela soulève la question de l'éthique. Les implications sont significatives.",de:"Das wirft die Frage der Ethik auf. Die Implikationen sind bedeutend.",it:"Questo solleva la questione dell'etica. Le implicazioni sono significative.",ar:"هذا يطرح تساؤلاً حول الأخلاقيات. الآثار المترتبة مهمة."},
+{en:"In conclusion, a nuanced approach is essential for sustainable solutions.",fr:"En conclusion, une approche nuancée est essentielle pour des solutions durables.",de:"Abschließend ist ein nuancierter Ansatz für nachhaltige Lösungen unerlässlich.",it:"In conclusione, un approccio sfumato è essenziale per soluzioni sostenibili.",ar:"في الختام، النهج الدقيق ضروري للحلول المستدامة."},
+]},
+]}, // end C1
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   C2 — EXPERT  (2 topics)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+C2:{col:"#DB2777",grad:"linear-gradient(135deg,#BE185D,#DB2777)",title:{en:"Expert",ar:"خبير",fr:"Expert",de:"Experte",it:"Esperto"},
+topics:[
+{id:"fluent",icon:"🌟",title:{en:"Fluent Communication",ar:"التواصل الطليق",fr:"Communication fluide",de:"Fließende Kommunikation",it:"Comunicazione fluente"},
+intro:{en:"Achieve complete fluency — express subtle ideas with precision and elegance.",ar:"حقق الطلاقة الكاملة — عبّر عن الأفكار الدقيقة بدقة وأناقة.",fr:"Atteignez une fluidité complète — exprimez des idées subtiles avec précision et élégance.",de:"Erreiche vollständige Flüssigkeit — drücke subtile Ideen mit Präzision und Eleganz aus.",it:"Raggiungi la piena fluidità — esprimi idee sottili con precisione ed eleganza."},
+vocab:[
+{e:"✨",en:"To coin a phrase...",fr:"Pour employer une expression...",de:"Um eine Redewendung zu benutzen...",it:"Per usare un'espressione...",ar:"لاستخدام تعبير مناسب..."},
+{e:"🎭",en:"Tongue in cheek",fr:"Avec humour",de:"Ironisch gemeint",it:"Detto con ironia",ar:"قيل بسخرية"},
+{e:"💎",en:"To put it bluntly...",fr:"Pour dire les choses franchement...",de:"Um es direkt zu sagen...",it:"Per dirla senza mezzi termini...",ar:"لأقول ذلك بصراحة..."},
+{e:"🌊",en:"Off the cuff",fr:"À l'improviste",de:"Aus dem Stegreif",it:"Improvvisato",ar:"بدون تحضير"},
+{e:"🔮",en:"As it stands...",fr:"Tel que c'est...",de:"So wie es steht...",it:"Come stanno le cose...",ar:"كما هو الحال..."},
+{e:"🎯",en:"The crux of the matter",fr:"Le cœur du problème",de:"Der Kern der Sache",it:"Il nodo della questione",ar:"جوهر المسألة"},
+{e:"💡",en:"To shed light on...",fr:"Pour éclaircir...",de:"Um Licht auf... zu werfen",it:"Per fare luce su...",ar:"لإلقاء الضوء على..."},
+{e:"🌙",en:"By and large",fr:"Dans l'ensemble",de:"Im Großen und Ganzen",it:"In linea di massima",ar:"بشكل عام"},
+{e:"⚡",en:"Come to think of it...",fr:"En y réfléchissant...",de:"Wenn ich darüber nachdenke...",it:"A pensarci bene...",ar:"إذا فكرت في الأمر..."},
+{e:"🏔️",en:"At the end of the day",fr:"En fin de compte",de:"Letzten Endes",it:"Alla fin fine",ar:"في نهاية المطاف"},
+],
+ex:[
+{en:"To put it bluntly, the crux of the matter is honesty in communication.",fr:"Pour dire les choses franchement, le cœur du problème est l'honnêteté dans la communication.",de:"Um es direkt zu sagen, der Kern der Sache ist Ehrlichkeit in der Kommunikation.",it:"Per dirla senza mezzi termini, il nodo della questione è l'onestà nella comunicazione.",ar:"لأقول ذلك بصراحة، جوهر المسألة هو الصدق في التواصل."},
+{en:"By and large, off the cuff speaking reveals true fluency.",fr:"Dans l'ensemble, parler à l'improviste révèle la vraie fluidité.",de:"Im Großen und Ganzen offenbart Sprechen aus dem Stegreif wahre Flüssigkeit.",it:"In linea di massima, parlare in modo improvvisato rivela la vera fluidità.",ar:"بشكل عام، الكلام بدون تحضير يكشف الطلاقة الحقيقية."},
+{en:"At the end of the day, come to think of it, language is about connection.",fr:"En fin de compte, en y réfléchissant, la langue est une question de connexion.",de:"Letzten Endes, wenn ich darüber nachdenke, geht es bei Sprache um Verbindung.",it:"Alla fin fine, a pensarci bene, la lingua riguarda la connessione.",ar:"في نهاية المطاف، إذا فكرت في الأمر، اللغة هي للتواصل."},
+]},
+{id:"deep",icon:"🌌",title:{en:"Deep Conversations",ar:"المحادثات العميقة",fr:"Conversations profondes",de:"Tiefe Gespräche",it:"Conversazioni profonde"},
+intro:{en:"Explore philosophy, meaning, and existential themes at the highest level.",ar:"استكشف الفلسفة والمعنى والمواضيع الوجودية بأعلى مستوى.",fr:"Explorez la philosophie, le sens et les thèmes existentiels au plus haut niveau.",de:"Erforsche Philosophie, Bedeutung und existenzielle Themen auf höchstem Niveau.",it:"Esplora filosofia, significato e temi esistenziali al massimo livello."},
+vocab:[
+{e:"🤔",en:"The meaning of life",fr:"Le sens de la vie",de:"Der Sinn des Lebens",it:"Il senso della vita",ar:"معنى الحياة"},
+{e:"⏳",en:"The nature of time",fr:"La nature du temps",de:"Die Natur der Zeit",it:"La natura del tempo",ar:"طبيعة الزمن"},
+{e:"🧠",en:"Consciousness",fr:"Conscience",de:"Bewusstsein",it:"Coscienza",ar:"الوعي"},
+{e:"⚖️",en:"Moral dilemma",fr:"Dilemme moral",de:"Moralisches Dilemma",it:"Dilemma morale",ar:"معضلة أخلاقية"},
+{e:"🌌",en:"Human existence",fr:"Existence humaine",de:"Menschliche Existenz",it:"Esistenza umana",ar:"الوجود البشري"},
+{e:"🔮",en:"Free will",fr:"Libre arbitre",de:"Freier Wille",it:"Libero arbitrio",ar:"الإرادة الحرة"},
+{e:"💎",en:"Beauty and aesthetics",fr:"Beauté et esthétique",de:"Schönheit und Ästhetik",it:"Bellezza ed estetica",ar:"الجمال والجماليات"},
+{e:"🌍",en:"The common good",fr:"Le bien commun",de:"Das Gemeinwohl",it:"Il bene comune",ar:"الصالح العام"},
+{e:"🎭",en:"Identity and self",fr:"Identité et soi",de:"Identität und Selbst",it:"Identità e sé",ar:"الهوية والذات"},
+{e:"🏔️",en:"The pursuit of happiness",fr:"La quête du bonheur",de:"Das Streben nach Glück",it:"La ricerca della felicità",ar:"السعي نحو السعادة"},
+],
+ex:[
+{en:"What is consciousness? Exploring human existence requires confronting the meaning of life.",fr:"Qu'est-ce que la conscience? Explorer l'existence humaine nécessite de confronter le sens de la vie.",de:"Was ist Bewusstsein? Die Erkundung der menschlichen Existenz erfordert, den Sinn des Lebens zu konfrontieren.",it:"Cos'è la coscienza? Esplorare l'esistenza umana richiede di confrontarsi con il senso della vita.",ar:"ما هو الوعي؟ استكشاف الوجود البشري يتطلب مواجهة معنى الحياة."},
+{en:"Free will and moral dilemma are central to identity and the pursuit of happiness.",fr:"Le libre arbitre et le dilemme moral sont au cœur de l'identité et de la quête du bonheur.",de:"Freier Wille und moralisches Dilemma sind zentral für Identität und das Streben nach Glück.",it:"Il libero arbitrio e il dilemma morale sono centrali per l'identità e la ricerca della felicità.",ar:"الإرادة الحرة والمعضلة الأخلاقية محوريتان للهوية والسعي نحو السعادة."},
+{en:"Beauty, aesthetics and the common good — these define civilization's deepest values.",fr:"Beauté, esthétique et bien commun — ils définissent les valeurs les plus profondes de la civilisation.",de:"Schönheit, Ästhetik und das Gemeinwohl — sie definieren die tiefsten Werte der Zivilisation.",it:"Bellezza, estetica e bene comune — definiscono i valori più profondi della civiltà.",ar:"الجمال والجماليات والصالح العام — هذه تحدد أعمق قيم الحضارة."},
+]},
+]}, // end C2
+}; // end CURRICULUM
+
+/* ══════════════════════════════════════════════════════════
+   APPLICATION STATE
+══════════════════════════════════════════════════════════ */
+const A={
+  N:null,T:null,          // native, target language codes
+  page:"home",            // home|levels|topics|lesson|quiz|saved
+  lk:null,ti:null,        // levelKey, topicIndex
+  tab:"v",                // v=vocab, e=examples
+  qz:{qs:[],qi:0,ans:[],last:null,done:false},
+  saved:JSON.parse(localStorage.getItem("mls")||"[]"),
+  done:JSON.parse(localStorage.getItem("mld")||"{}"),
+};
+const save=()=>{localStorage.setItem("mls",JSON.stringify(A.saved));localStorage.setItem("mld",JSON.stringify(A.done));};
+
+/* ══════════════════════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════════════════════ */
+const u=k=>(UIS[A.N]||UIS.en)[k]||k;
+const tn=o=>o?(o[A.N]||o.en||""):"";  // text in native
+const tt=o=>o?(o[A.T]||o.en||""):"";  // text in target
+const nd=()=>LM[A.N]?.dir==="rtl"?"rtl":"ltr";
+const td=()=>LM[A.T]?.dir==="rtl"?"rtl":"ltr";
+const esc=s=>(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+const say=(t,l)=>{if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=l||LM[A.T]?.tts||"en-US";u.rate=.82;speechSynthesis.speak(u);};
+const pOf=k=>{const ts=C[k]?.topics||[];if(!ts.length)return 0;return Math.round(ts.filter((_,i)=>A.done[`${k}-${i}`]).length/ts.length*100);};
+const totProg=()=>{const all=Object.values(C).reduce((a,l)=>a+l.topics.length,0);return all?Math.round(Object.values(A.done).filter(Boolean).length/all*100):0;};
+const isSaved=tw=>A.saved.some(w=>w.t===tw);
+
+/* ══════════════════════════════════════════════════════════
+   QUIZ BUILDER — uses ONLY current lesson vocab
+══════════════════════════════════════════════════════════ */
+function buildQuiz(vocab){
+  const pool=[...vocab].sort(()=>Math.random()-.5).slice(0,Math.min(8,vocab.length));
+  return pool.map(w=>{
+    const tw=w[A.T]||"",cN=w[A.N]||"";
+    const wrongs=vocab.filter(x=>x[A.T]!==w[A.T]).sort(()=>Math.random()-.5).slice(0,3).map(x=>x[A.N]||"—");
+    while(wrongs.length<3)wrongs.push("—");
+    return{tw,cN,opts:[cN,...wrongs].sort(()=>Math.random()-.5)};
+  });
+}
+
+/* ══════════════════════════════════════════════════════════
+   RENDER ENGINE
+══════════════════════════════════════════════════════════ */
+function render(){
+  const pg=document.getElementById("page");
+  // bottom nav labels
+  document.getElementById("nbl-home").textContent=u("home");
+  document.getElementById("nbl-levels").textContent=u("levels");
+  document.getElementById("nbl-saved").textContent=u("saved");
+  ["home","levels","saved"].forEach(id=>{document.getElementById(`nb-${id}`).classList.toggle("on",A.page===id);});
+  // header pair
+  document.getElementById("hdr-pair").textContent=`${LM[A.N].flag} → ${LM[A.T].flag} ${LM[A.T].name}`;
+  // direction
+  pg.setAttribute("dir",nd());
+  const R={home:rHome,levels:rLevels,topics:rTopics,lesson:rLesson,quiz:rQuiz,saved:rSaved};
+  pg.innerHTML=(R[A.page]||rHome)();
+  window.scrollTo(0,0);
+}
+
+/* ── HOME ── */
+function rHome(){
+  const pct=totProg(),dn=Object.values(A.done).filter(Boolean).length;
+  const lvRows=Object.entries(C).map(([k,lv])=>{
+    const p=pOf(k),isDn=p===100;
+    return`<div class="lv-row${isDn?" lv-done":""}" data-a="openLv" data-k="${k}">
+      <div class="lv-badge" style="background:${lv.col}">${k}</div>
+      <div class="lv-info">
+        <div class="lv-name">${tn(lv.title)}</div>
+        <div class="lv-sub">${lv.topics.length} ${u("levels")} · ${k}</div>
+        <div class="lv-mbar"><div class="lv-mfill" style="width:${p}%;background:${lv.col}"></div></div>
+        <div class="lv-pct">${p}%</div>
+      </div>
+      <div class="lv-arrow">${isDn?"✅":"›"}</div>
+    </div>`;
+  }).join("");
+  return`<div class="dash-banner">
+    <div class="db-deco db-deco1"></div><div class="db-deco db-deco2"></div>
+    <div class="db-greet">${LM[A.N].flag} ${LM[A.N].name}</div>
+    <div class="db-title">${u("levels")}: ${LM[A.T].flag} ${LM[A.T].name}</div>
+    <div class="db-pair">${LM[A.N].name} → ${LM[A.T].name}</div>
+    <div class="prog-bar-wrap">
+      <div class="pb-row"><span class="pb-lbl">${u("prog")}</span><span class="pb-val">${pct}%</span></div>
+      <div class="pb-track"><div class="pb-fill" style="width:${pct}%"></div></div>
+      <div class="pb-note">${dn} ${u("done")}</div>
+    </div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-c"><div class="stat-v" style="color:var(--primary)">${dn}</div><div class="stat-l">${u("done")}</div></div>
+    <div class="stat-c"><div class="stat-v" style="color:var(--success)">${A.saved.length}</div><div class="stat-l">${u("saved")}</div></div>
+    <div class="stat-c"><div class="stat-v" style="color:var(--warning)">${pct}%</div><div class="stat-l">${u("prog").split(" ")[0]}</div></div>
+  </div>
+  <div class="sec-hdr"><span class="sec-ttl">${u("levels")}</span></div>
+  <div class="lv-list au">${lvRows}</div>`;
+}
+
+/* ── LEVELS ── */
+function rLevels(){
+  const rows=Object.entries(C).map(([k,lv])=>{
+    const p=pOf(k),isDn=p===100;
+    return`<div class="lv-row${isDn?" lv-done":""}" data-a="openLv" data-k="${k}">
+      <div class="lv-badge" style="background:${lv.col}">${k}</div>
+      <div class="lv-info">
+        <div class="lv-name">${tn(lv.title)}</div>
+        <div class="lv-sub">${lv.topics.length} ${u("levels")} · ${k}</div>
+        <div class="lv-mbar"><div class="lv-mfill" style="width:${p}%;background:${lv.col}"></div></div>
+        <div class="lv-pct">${p}%</div>
+      </div>
+      <div class="lv-arrow">${isDn?"✅":"›"}</div>
+    </div>`;
+  }).join("");
+  return`<div class="sec-hdr" style="padding-top:18px"><span class="sec-ttl">${u("levels")}</span></div>
+  <div class="lv-list au">${rows}</div>`;
+}
+
+/* ── TOPICS ── */
+function rTopics(){
+  const lv=C[A.lk];if(!lv)return rHome();
+  const cards=lv.topics.map((t,i)=>{
+    const dn=A.done[`${A.lk}-${i}`];
+    return`<div class="tp-card${dn?" tp-done":""} au" style="animation-delay:${i*.045}s" data-a="openLesson" data-i="${i}">
+      ${dn?`<div class="tc-check">✓</div>`:""}
+      <span class="tc-ico">${t.icon}</span>
+      <div class="tc-name">${tn(t.title)}</div>
+      <div class="tc-wc">${t.vocab.length} ${u("words")}</div>
+    </div>`;
+  }).join("");
+  return`<div class="tp-hdr au">
+    <span class="tp-pill" style="background:${lv.col}">${A.lk}</span>
+    <div class="tp-title">${tn(lv.title)}</div>
+  </div>
+  <div class="tp-grid">${cards}</div>`;
+}
+
+/* ── LESSON ── */
+function rLesson(){
+  const lv=C[A.lk],tp=lv?.topics[A.ti];
+  if(!tp){gp("topics");return"";}
+  const tl=LM[A.T],tab=A.tab;
+
+  const vRows=tp.vocab.map((w,i)=>{
+    const tw=w[A.T]||"",nw=w[A.N]||"",sv=isSaved(tw);
+    return`<div class="v-item asr" style="animation-delay:${i*.035}s">
+      <div class="vi-emo">${w.e}</div>
+      <div class="vi-txts">
+        <div class="vi-tgt" dir="${td()}">${esc(tw)}</div>
+        <span class="vi-sep">──────</span>
+        <span class="vi-n-lbl">${u("trn")}</span>
+        <div class="vi-nat" dir="${nd()}">${esc(nw)}</div>
+      </div>
+      <div class="vi-actions">
+        <button class="aud-btn" data-a="say" data-tx="${esc(tw)}" data-lg="${tl.tts}">🔊</button>
+        <button class="save-btn${sv?" saved":""}" data-a="sv" data-tw="${esc(tw)}" data-nw="${esc(nw)}" data-em="${w.e}">⭐</button>
+      </div>
+    </div>`;
+  }).join("");
+
+  const eCards=tp.ex.map((ex,i)=>{
+    const ts=ex[A.T]||"",ns=ex[A.N]||"";
+    return`<div class="e-card au" style="animation-delay:${i*.06}s">
+      <span class="e-num">${u("exs")} ${i+1}</span>
+      <div class="e-tgt-row">
+        <div class="e-tgt-txt" dir="${td()}">${esc(ts)}</div>
+        <button class="aud-btn" style="flex-shrink:0;width:32px;height:32px;font-size:13px" data-a="say" data-tx="${esc(ts)}" data-lg="${tl.tts}">🔊</button>
+      </div>
+      <div class="e-nat-wrap">
+        <span class="e-nat-lbl">${u("trn")}</span>
+        <div class="e-nat-txt" dir="${nd()}">${esc(ns)}</div>
+      </div>
+    </div>`;
+  }).join("");
+
+  return`<div class="ls-topbar">
+    <button class="hdr-back" data-a="goTopics">←</button>
+    <div class="ls-meta">
+      <div class="ls-tag">${A.lk} · ${tn(lv.title)}</div>
+      <div class="ls-title">${tp.icon} ${tn(tp.title)}</div>
+    </div>
+  </div>
+  <div class="ls-tabs">
+    <button class="ls-tab${tab==="v"?" on":""}" data-a="tab" data-tb="v">📖 ${u("vocab")}</button>
+    <button class="ls-tab${tab==="e"?" on":""}" data-a="tab" data-tb="e">💬 ${u("exs")}</button>
+  </div>
+  ${tab==="v"?`
+  <div class="v-pane">
+    <div class="v-intro">
+      <span class="v-intro-rule">${u("rule")}</span>
+      <div class="v-intro-txt">${tn(tp.intro)}</div>
+    </div>
+    <div class="v-items">${vRows}</div>
+  </div>
+  <div class="q-cta" data-a="startQ">
+    <div class="qcta-icon">🎯</div>
+    <div><div class="qcta-ttl">${u("startQ")}</div><div class="qcta-sub">${tp.vocab.length} ${u("words")} · ${u("ruleT").split("·")[0].trim()}</div></div>
+    <div class="qcta-arr">›</div>
+  </div>`:`
+  <div class="e-pane">
+    <div class="e-intro-box">${u("eNote")}</div>
+    ${eCards}
+  </div>
+  <div class="q-cta" data-a="startQ">
+    <div class="qcta-icon">🎯</div>
+    <div><div class="qcta-ttl">${u("startQ")}</div><div class="qcta-sub">${tp.vocab.length} ${u("words")}</div></div>
+    <div class="qcta-arr">›</div>
+  </div>`}`;
+}
+
+/* ── QUIZ ── */
+function rQuiz(){
+  const lv=C[A.lk],tp=lv?.topics[A.ti];
+  if(!tp){gp("lesson");return"";}
+  const q=A.qz;
+  const tl=LM[A.T];
+
+  // Results
+  if(q.qi>=q.qs.length){
+    const ok=q.ans.filter(Boolean).length,tot=q.qs.length,pct=Math.round(ok/tot*100);
+    const pass=pct>=60;
+    if(pass){A.done[`${A.lk}-${A.ti}`]=true;save();}
+    const em=pct>=85?"🎉":pct>=60?"👍":"💪",msg=pct>=85?u("exc"):pct>=60?u("good"):u("keep");
+    return`<div class="qz-wrap"><div class="qz-result ap">
+      <span class="qr-emo">${em}</span>
+      <div class="qr-sc" style="color:${pass?"var(--success)":"var(--danger)"}">${ok}</div>
+      <div class="qr-of">${u("of")} ${tot} (${pct}%)</div>
+      <div class="qr-msg">${msg}</div>
+      <div class="qr-sub">${u("score")}: ${ok}/${tot}</div>
+      <div class="qr-btns">
+        <button class="btn btn-p btn-f btn-lg" data-a="retryQ">🔁 ${u("retry")}</button>
+        <button class="btn btn-s btn-f btn-lg" data-a="goLesson">📖 ${u("backL")}</button>
+      </div>
+    </div></div>`;
+  }
+
+  const cur=q.qs[q.qi],pct=(q.qi/q.qs.length)*100,ansd=q.done;
+  const opts=cur.opts.map(o=>{
+    let cls="ans-btn";
+    if(ansd){cls+=" qlk";if(o===cur.cN)cls+=" ans-reveal";else if(o===q.last&&o!==cur.cN)cls+=" ans-no";}
+    return`<button class="${cls}" data-a="ans" data-av="${esc(o)}" data-cv="${esc(cur.cN)}" dir="${nd()}">${esc(o)}</button>`;
+  }).join("");
+
+  return`<div class="qz-wrap">
+    <div class="qz-top">
+      <div class="qz-bar"><div class="qz-fill" style="width:${pct}%"></div></div>
+      <div class="qz-ctr">${q.qi+1}/${q.qs.length}</div>
+    </div>
+    <div class="qz-card ap">
+      <span class="qz-lvl">${A.lk} · ${tn(tp.title)}</span>
+      <div class="qz-word" dir="${td()}">${esc(cur.tw)}</div>
+      <div class="qz-instr">${LM[A.N].name}?</div>
+      <button class="qz-play" data-a="say" data-tx="${esc(cur.tw)}" data-lg="${tl.tts}">🔊</button>
+    </div>
+    <div class="ans-grid">${opts}</div>
+    ${ansd?`<div class="fb-row"><span class="fb-chip ${q.ans[q.qi]?"fb-ok":"fb-no"}">${q.ans[q.qi]?u("correct"):u("wrong")}</span></div>
+    <div class="qz-next-row"><button class="btn btn-p" data-a="nextQ">${q.qi+1<q.qs.length?u("next"):u("finish")}</button></div>`:""}
+  </div>`;
+}
+
+/* ── SAVED ── */
+function rSaved(){
+  if(!A.saved.length)return`<div class="empty-box au">
+    <span class="em-ico">⭐</span>
+    <div class="em-ttl">${u("noSaved")}</div>
+    <div class="em-sub">${u("noSavedS")}</div>
+    <button class="btn btn-p" data-a="goLv">${u("goLevels")}</button>
+  </div>`;
+  const items=A.saved.map((w,i)=>`
+  <div class="sw-item asr" style="animation-delay:${i*.04}s">
+    <div class="sw-emo">${w.e||"📝"}</div>
+    <div class="sw-info">
+      <div class="sw-tgt" dir="${td()}">${esc(w.t)}</div>
+      <div class="sw-nat" dir="${nd()}">${esc(w.n)}</div>
+    </div>
+    <button class="sw-rm" data-a="rmSv" data-i="${i}">✕</button>
+    <button class="aud-btn" style="font-size:14px" data-a="say" data-tx="${esc(w.t)}" data-lg="${LM[A.T]?.tts||"en-US"}">🔊</button>
+  </div>`).join("");
+  return`<div class="sec-hdr" style="padding-top:18px"><span class="sec-ttl">⭐ ${u("saved")} (${A.saved.length})</span></div>
+  <div class="sw-list">${items}</div>`;
+}
+
+/* ══════════════════════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════════════════════ */
+function gp(p){
+  A.page=p;
+  ["home","levels","saved"].forEach(id=>{document.getElementById(`nb-${id}`)?.classList.toggle("on",id===p);});
+  render();
+}
+window.navTo=gp;
+
+/* ══════════════════════════════════════════════════════════
+   EVENT DELEGATION
+══════════════════════════════════════════════════════════ */
+document.getElementById("page").addEventListener("click",e=>{
+  const el=e.target.closest("[data-a]");if(!el)return;
+  const a=el.dataset.a;
+  if(a==="say"){say(el.dataset.tx,el.dataset.lg);return;}
+  if(a==="sv"){
+    const tw=el.dataset.tw,nw=el.dataset.nw,em=el.dataset.em||"📝";
+    const idx=A.saved.findIndex(w=>w.t===tw);
+    idx>=0?A.saved.splice(idx,1):A.saved.push({t:tw,n:nw,e:em});
+    save();render();return;
+  }
+  if(a==="rmSv"){A.saved.splice(parseInt(el.dataset.i),1);save();render();return;}
+  if(a==="openLv"){A.lk=el.dataset.k;gp("topics");return;}
+  if(a==="openLesson"){A.ti=parseInt(el.dataset.i);A.tab="v";gp("lesson");return;}
+  if(a==="tab"){A.tab=el.dataset.tb;render();return;}
+  if(a==="startQ"){
+    const tp=C[A.lk]?.topics[A.ti];if(!tp)return;
+    A.qz={qs:buildQuiz(tp.vocab),qi:0,ans:[],last:null,done:false};
+    gp("quiz");return;
+  }
+  if(a==="ans"){
+    if(A.qz.done)return;
+    const av=el.dataset.av,cv=el.dataset.cv;
+    A.qz.last=av;A.qz.done=true;A.qz.ans.push(av===cv);
+    render();return;
+  }
+  if(a==="nextQ"){A.qz.qi++;A.qz.done=false;A.qz.last=null;render();return;}
+  if(a==="retryQ"){const tp=C[A.lk]?.topics[A.ti];A.qz={qs:buildQuiz(tp.vocab),qi:0,ans:[],last:null,done:false};render();return;}
+  if(a==="goTopics"){gp("topics");return;}
+  if(a==="goLesson"){A.tab="v";gp("lesson");return;}
+  if(a==="goLv"){gp("levels");return;}
+});
+
+/* ══════════════════════════════════════════════════════════
+   WELCOME SCREEN LOGIC
+══════════════════════════════════════════════════════════ */
+function buildWelcome(){
+  const ng=document.getElementById("native-grid"),tg=document.getElementById("target-grid");
+  function mkCard(k,type){
+    const m=LM[k],btn=document.createElement("button");
+    btn.className="lang-btn";btn.dataset.lang=k;btn.dataset.type=type;
+    btn.innerHTML=`<span class="l-flag">${m.flag}</span><div class="l-info"><div class="l-name">${m.name}</div><div class="l-nat">${m.nat}</div></div>`;
+    btn.addEventListener("click",()=>pick(k,type));
+    return btn;
+  }
+  Object.keys(LM).forEach(k=>{ng.appendChild(mkCard(k,"n"));tg.appendChild(mkCard(k,"t"));});
+  refreshW();
+}
+function pick(k,type){
+  if(type==="n"){A.N=k;if(A.T===k)A.T=null;}
+  else{if(A.N===k)return;A.T=k;}
+  refreshW();
+}
+function refreshW(){
+  const u0=UIS[A.N||"en"];
+  document.getElementById("lbl-native").textContent=u0.nl;
+  document.getElementById("lbl-target").textContent=u0.tl;
+  document.getElementById("go-text").textContent=u0.go;
+  document.querySelectorAll("#native-grid .lang-btn").forEach(b=>{b.classList.toggle("sel",b.dataset.lang===A.N);b.disabled=false;});
+  document.querySelectorAll("#target-grid .lang-btn").forEach(b=>{b.classList.toggle("sel",b.dataset.lang===A.T);const dis=b.dataset.lang===A.N;b.disabled=dis;b.classList.toggle("dis",dis);});
+  const ok=A.N&&A.T&&A.N!==A.T;
+  const btn=document.getElementById("go-btn");btn.disabled=!ok;btn.style.opacity=ok?"1":".32";
+}
+document.getElementById("go-btn").addEventListener("click",()=>{
+  if(!A.N||!A.T||A.N===A.T)return;
+  document.getElementById("s-welcome").classList.remove("on");
+  document.getElementById("s-app").classList.add("on");
+  gp("home");
+});
+
+/* ══════════════════════════════════════════════════════════
+   SESSION RESTORE
+══════════════════════════════════════════════════════════ */
+(()=>{
+  try{
+    const s=JSON.parse(localStorage.getItem("mlsess")||"null");
+    if(s&&s.n&&s.t&&LM[s.n]&&LM[s.t]&&s.n!==s.t){
+      A.N=s.n;A.T=s.t;
+      document.getElementById("s-welcome").classList.remove("on");
+      document.getElementById("s-app").classList.add("on");
+      gp("home");return;
+    }
+  }catch(_){}
+  buildWelcome();
+})();
+window.addEventListener("beforeunload",()=>{if(A.N&&A.T)localStorage.setItem("mlsess",JSON.stringify({n:A.N,t:A.T}));});
+</script>
+</body>
+</html>
